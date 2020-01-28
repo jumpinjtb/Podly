@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
 <TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1">
@@ -27,7 +28,23 @@
         </Tab>
         <Tab text="Audio Player">
             <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <Slider layoutX="60.0" layoutY="342.0" prefHeight="14.0" prefWidth="452.0" />
+                  <HBox layoutY="329.0">
+                      <Pane HBox.hgrow="ALWAYS" />
+                     <children>
+                        <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="43.0" />
+                     </children>
+                  </HBox>
+                   <ImageView fitHeight="32.0" fitWidth="26.0" layoutX="14.0" layoutY="326.0">
+                       <image>
+                           <Image url="@PlayButton.png" />
+                       </image>
+                   </ImageView>
+
+               </children>
+                </AnchorPane>
             </content>
         </Tab>
     </tabs>
