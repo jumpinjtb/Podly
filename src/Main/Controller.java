@@ -36,7 +36,5 @@ public class Controller {
         in.close();
         con.disconnect();
         System.out.println(content);
-
     }
-
 }
