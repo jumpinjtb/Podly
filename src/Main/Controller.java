@@ -9,7 +9,11 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.net.http.*;
+import java.nio.charset.StandardCharsets;
+
+import com.google.gson.*;
 
 public class Controller {
     public Button searchButton;
@@ -19,7 +23,8 @@ public class Controller {
         System.out.println("Searching... ");
         String value = searchBar.getText();
 
-        URL url = new URL("https://itunes.apple.com/search?term=" + value + "&" + "entity=podcast");
+        URL url = new URL("https://itunes.apple.com/search?term=" +
+                URLEncoder.encode(value, StandardCharsets.UTF_8) + "&" + "entity=podcast");
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET");
         con.connect();
