@@ -1,6 +1,7 @@
 package Main;
 
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
 import java.io.BufferedReader;
@@ -18,7 +19,7 @@ import com.google.gson.*;
 public class Controller {
     public Button searchButton;
     public TextField searchBar;
-
+    public Label label;
     public void search() throws IOException {
         System.out.println("Searching... ");
         String value = searchBar.getText();
@@ -34,12 +35,24 @@ public class Controller {
                 new InputStreamReader(con.getInputStream())
         );
         String inputLine;
-        StringBuffer content = new StringBuffer();
+        String content = "";
         while ((inputLine = in.readLine()) != null) {
-            content.append(inputLine);
+            content += inputLine;
         }
         in.close();
         con.disconnect();
         System.out.println(content);
+        //JsonObject jsonObject = new JsonParser().parse(content).getAsJsonObject();
+        parseJson(content);
     }
+
+    private void parseJson(String json) {
+        int stringIndex = json.indexOf("collectionName");
+        String nameSubstring = json.substring(stringIndex + 17);
+        int end = nameSubstring.indexOf("\"");
+        String name = nameSubstring.substring(0, end);
+
+        label.setText(name);
+    }
+
 }
