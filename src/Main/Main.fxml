@@ -12,14 +12,12 @@
         </Tab>
         <Tab text="Your Podcasts">
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                <VBox>
-                    <HBox>
-                        <Label fx:id="label">Podcast</Label>
-                        <TextField fx:id="searchBar" alignment="TOP_LEFT" layoutX="1013.0" layoutY="14.0"/>
-                        <Button fx:id="searchButton" alignment="TOP_LEFT" layoutX="1186.0" layoutY="14.0"
-                                mnemonicParsing="false" onAction="#search" text="Search"/>
-                    </HBox>
-                </VBox>
+
+                <Label fx:id="label">Podcast</Label>
+                <TextField fx:id="searchBar" alignment="TOP_LEFT" layoutX="1013.0" layoutY="14.0"/>
+                <Button fx:id="searchButton" alignment="TOP_LEFT" layoutX="1186.0" layoutY="14.0"
+                        mnemonicParsing="false" onAction="#search" text="Search"/>
+
             </AnchorPane>
         </Tab>
         <Tab text="Settings">
