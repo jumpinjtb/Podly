@@ -3,17 +3,20 @@ package Main;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.awt.image.BufferedImage;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.net.http.*;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+
+import javax.imageio.ImageIO;
 
 
 public class Controller {
@@ -21,6 +24,7 @@ public class Controller {
     public Button searchButton;
     public TextField searchBar;
     public Label label;
+    public ImageView imageView;
 
     public void search() throws IOException {
         System.out.println("Searching... ");
@@ -29,10 +33,11 @@ public class Controller {
         URL url = new URL("https://itunes.apple.com/search?term=" +
                 URLEncoder.encode(value, StandardCharsets.UTF_8) + "&" + "entity=podcast");
 
-        byte[] content = sendGetRequest(url);
+        byte[] content = sendGetRequest(url).readAllBytes();
 
         String str = new String(content);
         System.out.println(str);
+        parseJson(str);
     }
 
     private void parseJson(String json) throws IOException {
@@ -46,28 +51,19 @@ public class Controller {
         stringIndex = json.indexOf("artworkUrl30");
         substring = json.substring(stringIndex + 15);
         end = substring.indexOf("\"");
-        String image = substring.substring(0, end);
 
-        URL imageURL = new URL(image);
-        byte[] content = sendGetRequest(imageURL);
-        //System.out.println(content);
+        URL imageURL = new URL(substring.substring(0, end));
+
+        InputStream content = sendGetRequest(imageURL);
     }
 
-    private byte[] sendGetRequest(URL url) throws IOException {
+    private InputStream sendGetRequest(URL url) throws IOException {
         HttpURLConnection con =  (HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET");
         con.connect();
 
         int status = con.getResponseCode();
-        BufferedReader in = new BufferedReader(
-                new InputStreamReader(con.getInputStream())
-        );
 
-        byte[] buffer = new byte[10000];
-        ByteArrayInputStream content = new ByteArrayInputStream(buffer);
-
-        con.disconnect();
-
-        return buffer;
+        return con.getInputStream();
     }
 }
