@@ -8,12 +8,15 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 import javax.imageio.ImageIO;
+import javax.imageio.stream.FileImageInputStream;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.Buffer;
 import java.nio.charset.StandardCharsets;
+import java.lang.Object.*;
 
 
 public class Controller {
@@ -21,7 +24,7 @@ public class Controller {
     public Button searchButton;
     public TextField searchBar;
     public Label label;
-    public ImageView imageView;
+    public ImageView image;
 
     public void search() throws IOException {
         System.out.println("Searching... ");
@@ -50,8 +53,11 @@ public class Controller {
         end = substring.indexOf("\"");
 
         URL imageURL = new URL(substring.substring(0, end));
-        displayImage(imageView, imageURL);
-
+        byte[] imageArray = sendGetRequest(imageURL);
+        FileOutputStream fos = new FileOutputStream("res/images/image.jpg");
+        fos.write(imageArray);
+        fos.close();
+        displayImage(image, "res/images/image.jpg");
     }
 
     private byte[] sendGetRequest(URL url) throws IOException {
@@ -64,10 +70,9 @@ public class Controller {
         return con.getInputStream().readAllBytes();
     }
 
-    private void displayImage(ImageView view, URL url) throws IOException {
-        //System.out.println(url);
-        BufferedImage bImage = ImageIO.read(url);
-        Image image = SwingFXUtils.toFXImage(bImage, null);
-        view.setImage(image);
+    private void displayImage(ImageView view, String filepath) throws IOException {
+        System.out.println(filepath);
+        FileInputStream is = new FileInputStream(filepath);
+        view.setImage(new Image(is));
     }
 }
