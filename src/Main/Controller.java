@@ -1,22 +1,19 @@
 package Main;
 
+import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.net.http.*;
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-
-import javax.imageio.ImageIO;
 
 
 public class Controller {
@@ -33,7 +30,7 @@ public class Controller {
         URL url = new URL("https://itunes.apple.com/search?term=" +
                 URLEncoder.encode(value, StandardCharsets.UTF_8) + "&" + "entity=podcast");
 
-        byte[] content = sendGetRequest(url).readAllBytes();
+        byte[] content = sendGetRequest(url);
 
         String str = new String(content);
         System.out.println(str);
@@ -53,17 +50,24 @@ public class Controller {
         end = substring.indexOf("\"");
 
         URL imageURL = new URL(substring.substring(0, end));
+        displayImage(imageView, imageURL);
 
-        InputStream content = sendGetRequest(imageURL);
     }
 
-    private InputStream sendGetRequest(URL url) throws IOException {
+    private byte[] sendGetRequest(URL url) throws IOException {
         HttpURLConnection con =  (HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET");
         con.connect();
 
         int status = con.getResponseCode();
 
-        return con.getInputStream();
+        return con.getInputStream().readAllBytes();
+    }
+
+    private void displayImage(ImageView view, URL url) throws IOException {
+        //System.out.println(url);
+        BufferedImage bImage = ImageIO.read(url);
+        Image image = SwingFXUtils.toFXImage(bImage, null);
+        view.setImage(image);
     }
 }
