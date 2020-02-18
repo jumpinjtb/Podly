@@ -41,22 +41,22 @@ public class Controller {
     private void parseJson(String json) throws IOException {
 
         //Gets number of results from iTunes
-        Matcher matcher = Pattern.compile("\\d+").matcher(json);
-        matcher.find();
-        int result = Integer.parseInt(matcher.group());
+        Matcher numMatch = Pattern.compile("\\d+").matcher(json);
+        numMatch.find();
+        int result = Integer.parseInt(numMatch.group());
 
         //Gets podcast name
-        matcher = Pattern.compile("(?<=\"collectionName\":\")([A-Z]|[a-z]|[0-9]|\\s)*").matcher(json);
-        matcher.find();
-        String name = matcher.group();
+        Matcher nameMatch = Pattern.compile("(?<=\"collectionName\":\")([A-Z]|[a-z]|[0-9]|\\s)*").matcher(json);
+        nameMatch.find();
+        String name = nameMatch.group();
 
         label.setText(name);
 
         //Gets podcast art url
-        matcher = Pattern.compile("(?<=\"artworkUrl600\":\")([^\"].*?)(?=\")").matcher(json);
-        matcher.find();
-        URL artworkURL = new URL(matcher.group());
-        System.out.println(matcher.group());
+        Matcher artMatch = Pattern.compile("(?<=\"artworkUrl600\":\")([^\"].*?)(?=\")").matcher(json);
+        artMatch.find();
+        URL artworkURL = new URL(artMatch.group());
+        System.out.println(artMatch.group());
 
         byte[] artworkData = sendGetRequest(artworkURL);
         String filepath = "res/images/" + name + ".jpg";
@@ -64,6 +64,7 @@ public class Controller {
         fos.write(artworkData);
         fos.close();
         displayImage(image, filepath);
+        
 
     }
 
