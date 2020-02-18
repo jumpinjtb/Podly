@@ -10,13 +10,9 @@
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
         </Tab>
         <Tab text="Your Podcasts">
-            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-
-                <Label fx:id="label" layoutX="157.0" layoutY="5.0" text="Podcast">Podcast</Label>
+            <AnchorPane fx:id="anchor" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                 <TextField fx:id="searchBar" alignment="TOP_LEFT" layoutX="1013.0" layoutY="14.0" />
                 <Button fx:id="searchButton" alignment="TOP_LEFT" layoutX="1186.0" layoutY="14.0" mnemonicParsing="false" onAction="#search" text="Search" />
-                <ImageView fx:id="image" fitHeight="150.0" fitWidth="200.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true" />
-
             </AnchorPane>
         </Tab>
         <Tab text="Settings">

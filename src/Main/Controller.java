@@ -5,6 +5,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -17,11 +18,13 @@ import java.util.regex.Pattern;
 
 public class Controller {
 
-    public Button searchButton;
-    public Button subButton;
     public TextField searchBar;
-    public Label label;
-    public ImageView image;
+    public Button searchButton;
+    public AnchorPane anchor;
+
+    private int imageWidth = 200;
+    private int imageHeight = 200;
+    private int resultDistance = 220;
 
 
     public void search() throws IOException {
@@ -34,38 +37,55 @@ public class Controller {
         byte[] content = sendGetRequest(url);
 
         String str = new String(content);
-        System.out.println(str);
+        //System.out.println(str);
         parseJson(str);
     }
 
     private void parseJson(String json) throws IOException {
 
+        //Create regex patterns
         //Gets number of results from iTunes
         Matcher numMatch = Pattern.compile("\\d+").matcher(json);
         numMatch.find();
         int result = Integer.parseInt(numMatch.group());
-
         //Gets podcast name
-        Matcher nameMatch = Pattern.compile("(?<=\"collectionName\":\")([A-Z]|[a-z]|[0-9]|\\s)*").matcher(json);
-        nameMatch.find();
-        String name = nameMatch.group();
-
-        label.setText(name);
-
+        Matcher nameMatch = Pattern.compile("(?<=\"collectionName\":\")([^\"].*?)(?=\")").matcher(json);
         //Gets podcast art url
         Matcher artMatch = Pattern.compile("(?<=\"artworkUrl600\":\")([^\"].*?)(?=\")").matcher(json);
-        artMatch.find();
-        URL artworkURL = new URL(artMatch.group());
-        System.out.println(artMatch.group());
 
-        byte[] artworkData = sendGetRequest(artworkURL);
-        String filepath = "res/images/" + name + ".jpg";
-        FileOutputStream fos = new FileOutputStream(filepath);
-        fos.write(artworkData);
-        fos.close();
-        displayImage(image, filepath);
-        
+        for(int i = 0; i < result; i++) {
 
+            //Set properties for image view
+            ImageView view = new ImageView();
+            view.setFitHeight(imageHeight);
+            view.setFitWidth(imageWidth);
+            view.setLayoutX(0);
+            view.setLayoutY(resultDistance*(i));
+
+            //Set properties for label
+            Label label = new Label();
+            label.setLayoutX(imageWidth + 20);
+            label.setLayoutY(resultDistance*(i));
+
+            //Find next occurrence of podcast name and set label
+            nameMatch.find();
+            String name = nameMatch.group();
+            label.setText(name);
+            System.out.println(name);
+
+            //Find next occurence of artwork url and set the image view
+            artMatch.find();
+            URL artworkURL = new URL(artMatch.group());
+
+            byte[] artworkData = sendGetRequest(artworkURL);
+            String filepath = "res/images/" + name + ".jpg";
+            FileOutputStream fos = new FileOutputStream(filepath);
+            fos.write(artworkData);
+            fos.close();
+            displayImage(view, filepath);
+
+            anchor.getChildren().addAll(view, label);
+        }
     }
 
     private byte[] sendGetRequest(URL url) throws IOException {
