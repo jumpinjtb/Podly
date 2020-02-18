@@ -11,6 +11,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class Controller {
@@ -38,25 +40,31 @@ public class Controller {
 
     private void parseJson(String json) throws IOException {
 
-        int stringIndex = json.indexOf("collectionName");
-        String substring = json.substring(stringIndex + 17);
-        int end = substring.indexOf("\"");
-        String name = substring.substring(0, end);
+        //Gets number of results from iTunes
+        Matcher matcher = Pattern.compile("\\d+").matcher(json);
+        matcher.find();
+        int result = Integer.parseInt(matcher.group());
+
+        //Gets podcast name
+        matcher = Pattern.compile("(?<=\"collectionName\":\")([A-Z]|[a-z]|[0-9]|\\s)*").matcher(json);
+        matcher.find();
+        String name = matcher.group();
 
         label.setText(name);
 
-        stringIndex = json.indexOf("artworkUrl600");
-        substring = json.substring(stringIndex + 16);
-        end = substring.indexOf("\"");
-        System.out.println(substring);
+        //Gets podcast art url
+        matcher = Pattern.compile("(?<=\"artworkUrl600\":\")([^\"].*?)(?=\")").matcher(json);
+        matcher.find();
+        URL artworkURL = new URL(matcher.group());
+        System.out.println(matcher.group());
 
+        byte[] artworkData = sendGetRequest(artworkURL);
         String filepath = "res/images/" + name + ".jpg";
-        URL imageURL = new URL(substring.substring(0, end));
-        byte[] imageArray = sendGetRequest(imageURL);
         FileOutputStream fos = new FileOutputStream(filepath);
-        fos.write(imageArray);
+        fos.write(artworkData);
         fos.close();
         displayImage(image, filepath);
+
     }
 
     private byte[] sendGetRequest(URL url) throws IOException {
