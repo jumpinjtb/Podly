@@ -1,30 +1,26 @@
 package Main;
 
-import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-import javax.imageio.ImageIO;
-import javax.imageio.stream.FileImageInputStream;
-import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.nio.Buffer;
 import java.nio.charset.StandardCharsets;
-import java.lang.Object.*;
 
 
 public class Controller {
 
     public Button searchButton;
+    public Button subButton;
     public TextField searchBar;
     public Label label;
     public ImageView image;
+
 
     public void search() throws IOException {
         System.out.println("Searching... ");
@@ -41,6 +37,7 @@ public class Controller {
     }
 
     private void parseJson(String json) throws IOException {
+
         int stringIndex = json.indexOf("collectionName");
         String substring = json.substring(stringIndex + 17);
         int end = substring.indexOf("\"");
@@ -48,16 +45,18 @@ public class Controller {
 
         label.setText(name);
 
-        stringIndex = json.indexOf("artworkUrl30");
-        substring = json.substring(stringIndex + 15);
+        stringIndex = json.indexOf("artworkUrl600");
+        substring = json.substring(stringIndex + 16);
         end = substring.indexOf("\"");
+        System.out.println(substring);
 
+        String filepath = "res/images/" + name + ".jpg";
         URL imageURL = new URL(substring.substring(0, end));
         byte[] imageArray = sendGetRequest(imageURL);
-        FileOutputStream fos = new FileOutputStream("res/images/image.jpg");
+        FileOutputStream fos = new FileOutputStream(filepath);
         fos.write(imageArray);
         fos.close();
-        displayImage(image, "res/images/image.jpg");
+        displayImage(image, filepath);
     }
 
     private byte[] sendGetRequest(URL url) throws IOException {
@@ -66,13 +65,14 @@ public class Controller {
         con.connect();
 
         int status = con.getResponseCode();
-
-        return con.getInputStream().readAllBytes();
+        byte[] value = con.getInputStream().readAllBytes();
+        con.disconnect();
+        return value;
     }
 
     private void displayImage(ImageView view, String filepath) throws IOException {
-        System.out.println(filepath);
         FileInputStream is = new FileInputStream(filepath);
         view.setImage(new Image(is));
     }
+
 }
