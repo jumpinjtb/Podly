@@ -42,6 +42,8 @@ public class Controller {
     }
 
     private void parseJson(String json) throws IOException {
+        anchor.getChildren().clear();
+        anchor.getChildren().addAll(searchBar, searchButton);
 
         //Create regex patterns
         //Gets number of results from iTunes
