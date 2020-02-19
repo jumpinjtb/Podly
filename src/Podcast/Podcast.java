@@ -1,4 +1,4 @@
-package Main;
+package Podcast;
 
 public class Podcast {
 }

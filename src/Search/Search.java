@@ -1,4 +1,4 @@
-package Main;
+package Search;
 
 public class Search {
 }
