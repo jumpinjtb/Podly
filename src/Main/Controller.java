@@ -37,7 +37,7 @@ public class Controller {
         byte[] content = sendGetRequest(url);
 
         String str = new String(content);
-        //System.out.println(str);
+        System.out.println(str);
         parseJson(str);
     }
 
@@ -54,6 +54,10 @@ public class Controller {
         Matcher nameMatch = Pattern.compile("(?<=\"collectionName\":\")([^\"].*?)(?=\")").matcher(json);
         //Gets podcast art url
         Matcher artMatch = Pattern.compile("(?<=\"artworkUrl600\":\")([^\"].*?)(?=\")").matcher(json);
+        //Get podcast ID
+        Matcher idMatch = Pattern.compile("(?<=\"collectionId\":)([0-9]*?)(?=,)").matcher(json);
+        //Get rss URL
+        Matcher feedMatch = Pattern.compile("(?<=\"feedUrl\":\")([^\"].*?)(?=\")").matcher(json);
 
         for(int i = 0; i < result; i++) {
 
@@ -75,16 +79,24 @@ public class Controller {
             label.setText(name);
             System.out.println(name);
 
-            //Find next occurence of artwork url and set the image view
+            //Find next occurrence of artwork url and set the image view
             artMatch.find();
             URL artworkURL = new URL(artMatch.group());
 
+            //Find next occurrence of podcast ID
+            idMatch.find();
+            String id = idMatch.group();
+
             byte[] artworkData = sendGetRequest(artworkURL);
-            String filepath = "res/images/" + name + ".jpg";
+            String filepath = "res/images/" + id + ".jpg";
             FileOutputStream fos = new FileOutputStream(filepath);
             fos.write(artworkData);
             fos.close();
             displayImage(view, filepath);
+
+            feedMatch.find();
+            String feedURL = feedMatch.group();
+            System.out.println(feedURL);
 
             anchor.getChildren().addAll(view, label);
         }
