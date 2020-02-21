@@ -7,8 +7,9 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.media.MediaView?>
 
-<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Main.Controller">
     <tabs>
         <Tab text="Welcome">
             <content>
@@ -41,6 +42,7 @@
                     </items>
                   </ToolBar>
                   <Separator layoutX="421.0" layoutY="2.0" orientation="VERTICAL" prefHeight="370.0" prefWidth="6.0" />
+                  <MediaView fx:id="mediaView" fitHeight="200.0" fitWidth="200.0" layoutX="111.0" layoutY="86.0" />
                </children>
                 </AnchorPane>
             </content>
