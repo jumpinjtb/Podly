@@ -6,6 +6,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.SplitPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import java.beans.EventHandler;
@@ -15,27 +17,19 @@ import java.io.IOException;
 public class Controller {
     @FXML
     private Button mainButton, SearchButton, PlayerButton;
+    @FXML
+    private Pane mainPane;
 
-
-
-    public void MainButtonClicked(ActionEvent actionEvent) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("Main.fxml"));
-        Stage mainStage = new Stage();
-        mainStage.setScene(new Scene(root,1280, 720));
-        mainStage.show();
-    }
 
     public void PlayerButtonClicked(ActionEvent actionEvent) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("../Podcast/Podcast.fxml"));
-        Stage podcastStage = new Stage();
-        podcastStage.setScene(new Scene(root,1280, 720));
-        podcastStage.show();
+    // calling the main pane to reload with the podcast fxml.
+        // https://www.youtube.com/watch?v=RJOza3XQk34
+        SplitPane podPane = FXMLLoader.load(getClass().getResource("../Podcast/Podcast.fxml"));
+        mainPane.getChildren().setAll(podPane);
     }
 
     public void SearchButtonClicked(ActionEvent actionEvent) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("../Search/Search.fxml"));
-        Stage searchStage = new Stage();
-        searchStage.setScene(new Scene(root,1280, 720));
-        searchStage.show();
+        Pane searchPane = FXMLLoader.load(getClass().getResource("../Search/Search.fxml"));
+        mainPane.getChildren().setAll(searchPane);
     }
 }

@@ -3,12 +3,13 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<Pane fx:id="SearchView" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1">
+<Pane fx:id="SearchPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Search.Search">
     <ToolBar layoutY="684.0" prefHeight="26.0" prefWidth="1280.0">
         <items>
-            <Button mnemonicParsing="false" text="Main" />
-            <Button mnemonicParsing="false" text="Player" />
-            <Button mnemonicParsing="false" text="Search" />
+            <Button fx:id= "mainButton" mnemonicParsing="false" text="Main" onAction="#MainButtonClicked" />
+            <Button fx:id= "PlayerButton" mnemonicParsing="false" text="Player" onAction="#PlayerButtonClicked"  />
+            <Button fx:id= "SearchButton" mnemonicParsing="false" text="Search" disable="true" />
+
         </items>
     </ToolBar>
     <ToolBar prefHeight="40.0" prefWidth="1280.0">
