@@ -32,4 +32,5 @@ public class Controller {
         Pane searchPane = FXMLLoader.load(getClass().getResource("../Search/Search.fxml"));
         mainPane.getChildren().setAll(searchPane);
     }
+
 }
