@@ -1,5 +1,6 @@
 package Main;
 
+
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.media.Media;
@@ -15,6 +16,20 @@ public class Controller implements Initializable {
     private MediaView mediaView;
     private MediaPlayer mediaPlayer;
     private Media media;
+    private Button mainButton, SearchButton, PlayerButton;
+    private Pane mainPane;
+
+
+    public void PlayerButtonClicked(ActionEvent actionEvent) throws IOException {
+    // calling the main pane to reload with the podcast fxml.
+        // https://www.youtube.com/watch?v=RJOza3XQk34
+        SplitPane podPane = FXMLLoader.load(getClass().getResource("../Podcast/Podcast.fxml"));
+        mainPane.getChildren().setAll(podPane);
+    }
+
+    public void SearchButtonClicked(ActionEvent actionEvent) throws IOException {
+        Pane searchPane = FXMLLoader.load(getClass().getResource("../Search/Search.fxml"));
+        mainPane.getChildren().setAll(searchPane);
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -25,6 +40,5 @@ public class Controller implements Initializable {
         mediaPlayer.setAutoPlay(true);
 
     }
-
 
 }
