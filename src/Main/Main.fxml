@@ -1,34 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Text?>
 
-<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1">
-    <tabs>
-        <Tab text="Welcome">
+<Pane fx:id = "mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Main.Controller">
+   <children>
+      <ToolBar layoutY="684.0" prefHeight="26.0" prefWidth="1280.0">
+          <items>
+        <Button fx:id= "mainButton" mnemonicParsing="false" text="Main" disable="true" />
+          <Button fx:id= "PlayerButton" mnemonicParsing="false" text="Player" onAction="#PlayerButtonClicked"  />
+          <Button fx:id= "SearchButton" mnemonicParsing="false" text="Search" onAction="#SearchButtonClicked" />
+          </items>
+      </ToolBar>
+      <TabPane prefHeight="690.0" prefWidth="1280.0" tabClosingPolicy="UNAVAILABLE">
+        <tabs>
+          <Tab text="Your Podcasts">
             <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="654.0" prefWidth="1280.0">
+                     <children>
+                        <ToolBar layoutX="1057.0" prefHeight="40.0" prefWidth="222.0">
+                          <items>
+                              <TextField />
+                            <Button mnemonicParsing="false" text="Search" />
+                          </items>
+                        </ToolBar>
+                     </children></AnchorPane>
             </content>
-        </Tab>
-        <Tab text="Your Podcasts">
+          </Tab>
+          <Tab text="Extras">
             <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+              <Pane minHeight="0.0" minWidth="0.0" prefHeight="720.0" prefWidth="1280.0">
+                     <children>
+                        <Separator layoutX="637.0" layoutY="5.0" orientation="VERTICAL" prefHeight="720.0" prefWidth="0.0" />
+                        <Text layoutX="258.0" layoutY="18.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Listening Statistics" />
+                        <Text layoutX="944.0" layoutY="25.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Themes" />
+                     </children>
+              </Pane>
             </content>
-        </Tab>
-        <Tab text="Settings">
-            <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-            </content>
-        </Tab>
-        <Tab text="Stats">
-            <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-            </content>
-        </Tab>
-        <Tab text="Audio Player">
-            <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-            </content>
-        </Tab>
-    </tabs>
-</TabPane>
+          </Tab>
+            <Tab text="Settings">
+                <content>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                </content>
+            </Tab>
+        </tabs>
+      </TabPane>
+   </children>
+</Pane>
