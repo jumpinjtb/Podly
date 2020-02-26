@@ -22,28 +22,7 @@
       <TabPane prefHeight="690.0" prefWidth="1280.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
           <Tab text="Your Podcasts">
-            <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="654.0" prefWidth="1280.0">
-                     <children>
-                        <ToolBar layoutX="1057.0" prefHeight="40.0" prefWidth="222.0">
-                          <items>
-                              <TextField />
-                            <Button mnemonicParsing="false" text="Search" />
-                          </items>
-                        </ToolBar>
-                     </children></AnchorPane>
-            </content>
-          </Tab>
-          <Tab text="Extras">
-            <content>
-              <Pane minHeight="0.0" minWidth="0.0" prefHeight="720.0" prefWidth="1280.0">
-                     <children>
-                        <Separator layoutX="637.0" layoutY="5.0" orientation="VERTICAL" prefHeight="720.0" prefWidth="0.0" />
-                        <Text layoutX="258.0" layoutY="18.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Listening Statistics" />
-                        <Text layoutX="944.0" layoutY="25.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Themes" />
-                     </children>
-              </Pane>
-            </content>
+
           </Tab>
             <Tab text="Settings">
                 <content>
@@ -54,3 +33,4 @@
       </TabPane>
    </children>
 </Pane>
+

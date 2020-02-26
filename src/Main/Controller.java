@@ -1,23 +1,22 @@
 package Main;
 
-import javafx.event.ActionEvent;
+
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.SplitPane;
-import javafx.scene.layout.Pane;
-import javafx.stage.Stage;
+import javafx.fxml.Initializable;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 
-import java.beans.EventHandler;
-import java.io.IOException;
+import java.io.File;
+import java.net.URL;
+import java.util.ResourceBundle;
 
-
-public class Controller {
+public class Controller implements Initializable {
     @FXML
+    private MediaView mediaView;
+    private MediaPlayer mediaPlayer;
+    private Media media;
     private Button mainButton, SearchButton, PlayerButton;
-    @FXML
     private Pane mainPane;
 
 
@@ -31,6 +30,15 @@ public class Controller {
     public void SearchButtonClicked(ActionEvent actionEvent) throws IOException {
         Pane searchPane = FXMLLoader.load(getClass().getResource("../Search/Search.fxml"));
         mainPane.getChildren().setAll(searchPane);
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        String path = new File("MusicFile.mp3").getAbsolutePath();
+        media = new Media(new File(path).toURI().toString());
+        mediaPlayer = new MediaPlayer(media);
+        mediaView.setMediaPlayer(mediaPlayer);
+        mediaPlayer.setAutoPlay(true);
+
     }
 
 }
