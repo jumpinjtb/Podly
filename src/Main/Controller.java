@@ -1,11 +1,14 @@
 package Main;
 
+import RSS.Feed;
+import RSS.RSSFeedParser;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import org.jdom2.JDOMException;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -27,8 +30,7 @@ public class Controller {
     private int resultDistance = 220;
 
 
-    public void search() throws IOException {
-        System.out.println("Searching... ");
+    public void search() throws IOException, JDOMException {
         String value = searchBar.getText();
 
         URL url = new URL("https://itunes.apple.com/search?term=" +
@@ -37,11 +39,11 @@ public class Controller {
         byte[] content = sendGetRequest(url);
 
         String str = new String(content);
-        System.out.println(str);
         parseJson(str);
+
     }
 
-    private void parseJson(String json) throws IOException {
+    private void parseJson(String json) throws IOException, JDOMException {
         anchor.getChildren().clear();
         anchor.getChildren().addAll(searchBar, searchButton);
 
@@ -77,7 +79,6 @@ public class Controller {
             nameMatch.find();
             String name = nameMatch.group();
             label.setText(name);
-            System.out.println(name);
 
             //Find next occurrence of artwork url and set the image view
             artMatch.find();
@@ -88,17 +89,23 @@ public class Controller {
             String id = idMatch.group();
 
             byte[] artworkData = sendGetRequest(artworkURL);
-            String filepath = "res/images/" + id + ".jpg";
-            FileOutputStream fos = new FileOutputStream(filepath);
+            String imgFilepath = "res/images/" + id + ".jpg";
+            FileOutputStream fos = new FileOutputStream(imgFilepath);
             fos.write(artworkData);
             fos.close();
-            displayImage(view, filepath);
+            displayImage(view, imgFilepath);
 
             feedMatch.find();
             String feedURL = feedMatch.group();
-            System.out.println(feedURL);
+            String rssFilePath = "res/rss/" + id + ".rss";
+            fos = new FileOutputStream(rssFilePath);
+            fos.write(sendGetRequest(new URL(feedURL)));
+            fos.close();
 
             anchor.getChildren().addAll(view, label);
+
+            RSSFeedParser parser = new RSSFeedParser(rssFilePath);
+            Feed feed = parser.readFeed();
         }
     }
 

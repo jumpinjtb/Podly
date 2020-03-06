@@ -1,14 +1,18 @@
 package RSS;
 
+
+import java.io.File;
+import java.net.URL;
+
 public class FeedItem {
     public String title;
     public String description;
-    public String author;
+    public URL audio;
 
-    public FeedItem(String title, String description, String author) {
+    public FeedItem(String title, String description, URL audio) {
         this.title = title;
         this.description = description;
-        this.author = author;
+        this.audio = audio;
     }
 
     public String getTitle() {
@@ -16,8 +20,5 @@ public class FeedItem {
     }
     public String getDescription() {
         return description;
-    }
-    public String getAuthor() {
-        return author;
     }
 }

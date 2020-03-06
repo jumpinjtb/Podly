@@ -10,10 +10,11 @@ public class Feed {
 
     public List<FeedItem> episodes = new ArrayList<>();
 
-    public Feed(String title, String link, String description) {
+    public Feed(String title, String link, String description, List<FeedItem> episodes) {
         this.title = title;
         this.link = link;
         this.description = description;
+        this.episodes = episodes;
     }
 
     public List<FeedItem> getEpisodes() {
