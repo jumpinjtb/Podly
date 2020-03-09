@@ -3,18 +3,18 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<Pane fx:id="SearchPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Search.Search">
+<Pane fx:id="searchPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Search.Search">
     <ToolBar layoutY="684.0" prefHeight="26.0" prefWidth="1280.0">
         <items>
-            <Button fx:id= "mainButton" mnemonicParsing="false" text="Main" onAction="#MainButtonClicked" />
-            <Button fx:id= "PlayerButton" mnemonicParsing="false" text="Player" onAction="#PlayerButtonClicked"  />
-            <Button fx:id= "SearchButton" mnemonicParsing="false" text="Search" disable="true" />
+            <Button fx:id="mainButton" mnemonicParsing="false" onAction="#MainButtonClicked" text="Main" />
+            <Button fx:id="playerButton" mnemonicParsing="false" onAction="#PlayerButtonClicked" text="Player" />
+            <Button fx:id="searchButton" disable="true" mnemonicParsing="false" text="Search" />
 
         </items>
     </ToolBar>
     <ToolBar prefHeight="40.0" prefWidth="1280.0">
-        <TextField alignment="TOP_LEFT" translateX="1025.0" />
-        <Button alignment="TOP_LEFT" mnemonicParsing="false" text="Search" translateX="1050.0" />
+        <TextField fx:id="searchBar" alignment="TOP_LEFT" translateX="1025.0" />
+        <Button fx:id="search" alignment="TOP_LEFT" mnemonicParsing="false" onAction="#search" text="Search" translateX="1050.0" />
     </ToolBar>
 
 </Pane>
