@@ -35,12 +35,13 @@ public class RSSFeedParser {
     private List<FeedItem> readEpisodes(File feed) throws MalformedURLException {
         List<FeedItem> episodes = new LinkedList<>();
 
-        List<Element> items = root.getChildren("item");
+        List<Element> items = root.getChild("channel").getChildren("item");
         for(Element episode : items) {
             String title = episode.getChildText("title");
             String description = episode.getChildText("itunes:summary");
-            URL audio =  new URL(episode.getChildText("url"));
+            URL audio =  new URL(episode.getChild("enclosure").getAttributeValue("url"));
             episodes.add(new FeedItem(title, description, audio));
+            System.out.println(title);
         }
 
         return episodes;

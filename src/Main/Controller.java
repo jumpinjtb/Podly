@@ -23,7 +23,7 @@ public class Controller implements Initializable {
     private MediaPlayer mediaPlayer;
     private Media media;
     @FXML
-    private Button mainButton, SearchButton, PlayerButton;
+    private Button mainButton, searchButton,playerButton;
     @FXML
     private Pane mainPane;
 
@@ -46,7 +46,7 @@ public class Controller implements Initializable {
         media = new Media(new File(path).toURI().toString());
         mediaPlayer = new MediaPlayer(media);
         mediaView.setMediaPlayer(mediaPlayer);
-        mediaPlayer.setAutoPlay(true);
+        mediaPlayer.setAutoPlay(false);
 
     }
 

@@ -8,7 +8,7 @@ public class Feed {
     public String link;
     public String description;
 
-    public List<FeedItem> episodes = new ArrayList<>();
+    public List<FeedItem> episodes;
 
     public Feed(String title, String link, String description, List<FeedItem> episodes) {
         this.title = title;

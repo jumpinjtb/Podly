@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 
 <Pane fx:id="searchPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Search.Search">
-    <ToolBar layoutY="684.0" prefHeight="26.0" prefWidth="1280.0">
+    <ToolBar fx:id="toolBar" layoutY="684.0" prefHeight="26.0" prefWidth="1280.0">
         <items>
             <Button fx:id="mainButton" mnemonicParsing="false" onAction="#MainButtonClicked" text="Main" />
             <Button fx:id="playerButton" mnemonicParsing="false" onAction="#PlayerButtonClicked" text="Player" />

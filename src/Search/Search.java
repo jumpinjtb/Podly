@@ -1,18 +1,17 @@
 package Search;
 
 import RSS.Feed;
+import RSS.FeedItem;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
+import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 import RSS.RSSFeedParser;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.media.Media;
 import org.jdom2.JDOMException;
 
 import java.io.*;
@@ -20,21 +19,22 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
-
 import java.io.IOException;
-import java.net.URL;
+
 
 public class Search {
     @FXML
-    private Button mainButton, search, playerButton;
+    private Button mainButton, searchButton, playerButton, search;
     @FXML
     private Pane searchPane;
     @FXML
     public TextField searchBar;
+    @FXML
+    public ToolBar toolBar;
 
     private int imageWidth = 200;
     private int imageHeight = 200;
@@ -42,7 +42,7 @@ public class Search {
 
 
     public void MainButtonClicked(ActionEvent actionEvent) throws IOException {
-        Parent mainPane = FXMLLoader.load(getClass().getResource("Main.fxml"));
+        Parent mainPane = FXMLLoader.load(getClass().getResource("../Main/Main.fxml"));
         searchPane.getChildren().setAll(mainPane);
     }
 
@@ -67,6 +67,7 @@ public class Search {
 
     private void parseJson(String json) throws IOException, JDOMException {
         searchPane.getChildren().clear();
+        searchPane.getChildren().addAll(toolBar);
         searchPane.getChildren().addAll(searchBar, search);
 
         //Create regex patterns
@@ -112,6 +113,8 @@ public class Search {
 
             byte[] artworkData = sendGetRequest(artworkURL);
             String imgFilepath = "res/images/" + id + ".jpg";
+            File imgFile = new File(imgFilepath);
+            imgFile.getParentFile().mkdirs();
             FileOutputStream fos = new FileOutputStream(imgFilepath);
             fos.write(artworkData);
             fos.close();
@@ -120,14 +123,25 @@ public class Search {
             feedMatch.find();
             String feedURL = feedMatch.group();
             String rssFilePath = "res/rss/" + id + ".rss";
+            File rssFile = new File(rssFilePath);
+            rssFile.getParentFile().mkdirs();
             fos = new FileOutputStream(rssFilePath);
             fos.write(sendGetRequest(new URL(feedURL)));
             fos.close();
 
-            searchPane.getChildren().addAll(view, label);
+            Button open = new Button();
+            open.setOnAction(click -> {
+                try {
+                    openPodcast(rssFilePath, id);
+                } catch (JDOMException | IOException e) {
+                    e.printStackTrace();
+                }
+            });
+            open.setLayoutX(imageWidth + 20);
+            open.setLayoutY((resultDistance * i) + 20);
+            open.setText("View");
 
-            RSSFeedParser parser = new RSSFeedParser(rssFilePath);
-            Feed feed = parser.readFeed();
+            searchPane.getChildren().addAll(view, label, open);
         }
     }
 
@@ -137,7 +151,8 @@ public class Search {
         con.connect();
 
         int status = con.getResponseCode();
-        byte[] value = con.getInputStream().readAllBytes();
+        InputStream is = con.getInputStream();
+        byte[] value = is.readAllBytes();
         con.disconnect();
         return value;
     }
@@ -145,5 +160,42 @@ public class Search {
     private void displayImage(ImageView view, String filepath) throws IOException {
         FileInputStream is = new FileInputStream(filepath);
         view.setImage(new Image(is));
+    }
+
+    private void openPodcast(String filePath, String id) throws JDOMException, IOException {
+        searchPane.getChildren().clear();
+        searchPane.getChildren().addAll(toolBar);
+        searchPane.getChildren().addAll(searchBar, search);
+
+        RSSFeedParser parser = new RSSFeedParser(filePath);
+        Feed feed = parser.readFeed();
+
+        int index = 0;
+        for(FeedItem item: feed.episodes) {
+            Label title = new Label(item.title);
+            Button download = new Button();
+            ProgressBar pb = new ProgressBar();
+            download.setOnAction(click -> {
+                String audioFilePath = "res/audio/" + id + "/" + item.title;
+                try {
+                    byte[] audioData = sendGetRequest(item.audio);
+                    File audioFile = new File(audioFilePath);
+                    audioFile.getParentFile().mkdirs();
+                    FileOutputStream fos = new FileOutputStream(audioFilePath);
+                    fos.write(audioData);
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+
+            title.setLayoutY(resultDistance * index);
+            download.setLayoutY(resultDistance * index + 15);
+            download.setText("Download");
+
+            searchPane.getChildren().addAll(title, download);
+
+            index++;
+        }
     }
 }
