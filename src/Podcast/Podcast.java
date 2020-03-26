@@ -60,10 +60,10 @@ public class Podcast implements Initializable {
         });
     }
 
-    /*public void play(ActionEvent event){
+    public void play(ActionEvent event){
         mediaPlayer.play();
     }
     public void pause(ActionEvent event){
         mediaPlayer.pause();
-    }*/
+    }
 }
