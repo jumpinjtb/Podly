@@ -11,7 +11,6 @@ import javafx.scene.layout.Pane;
 import RSS.RSSFeedParser;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.media.Media;
 import org.jdom2.JDOMException;
 
 import java.io.*;
@@ -19,12 +18,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import java.io.IOException;
-
 
 public class Search {
     @FXML
@@ -50,7 +47,6 @@ public class Search {
         Parent podPane = FXMLLoader.load(getClass().getResource("../Podcast/Podcast.fxml"));
         searchPane.getChildren().setAll(podPane);
     }
-
 
     public void search() throws IOException, JDOMException {
         String value = searchBar.getText();
@@ -157,6 +153,19 @@ public class Search {
         return value;
     }
 
+    private void downloadAudio(URL url, String filepath) throws IOException {
+        try (BufferedInputStream in = new BufferedInputStream(url.openStream());
+             FileOutputStream fileOutputStream = new FileOutputStream(filepath)) {
+            byte[] dataBuffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
+                fileOutputStream.write(dataBuffer, 0, bytesRead);
+            }
+        } catch (IOException e) {
+            // handle exception
+        }
+    }
+
     private void displayImage(ImageView view, String filepath) throws IOException {
         FileInputStream is = new FileInputStream(filepath);
         view.setImage(new Image(is));
@@ -168,33 +177,34 @@ public class Search {
         searchPane.getChildren().addAll(searchBar, search);
 
         RSSFeedParser parser = new RSSFeedParser(filePath);
-        Feed feed = parser.readFeed();
+        Feed feed = parser.readFeed(id);
+
+        ProgressIndicator pb = new ProgressIndicator();
 
         int index = 0;
         for(FeedItem item: feed.episodes) {
             Label title = new Label(item.title);
             Button download = new Button();
-            ProgressBar pb = new ProgressBar();
+
             download.setOnAction(click -> {
-                String audioFilePath = "res/audio/" + id + "/" + item.title;
-                try {
-                    byte[] audioData = sendGetRequest(item.audio);
-                    File audioFile = new File(audioFilePath);
-                    audioFile.getParentFile().mkdirs();
-                    FileOutputStream fos = new FileOutputStream(audioFilePath);
-                    fos.write(audioData);
-                    fos.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                pb.setProgress(ProgressIndicator.INDETERMINATE_PROGRESS);
+                pb.setLayoutY(25);
+                searchPane.getChildren().add(pb);
+                Thread t1 = new Thread(() -> {
+                    String audioFilePath = "res/audio/" + id + "/" + item.title;
+                    try {
+                        downloadAudio(item.audio, audioFilePath);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+                t1.start();
             });
 
             title.setLayoutY(resultDistance * index);
             download.setLayoutY(resultDistance * index + 15);
             download.setText("Download");
-
             searchPane.getChildren().addAll(title, download);
-
             index++;
         }
     }
