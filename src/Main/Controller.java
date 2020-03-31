@@ -14,7 +14,7 @@ import java.io.IOException;
 
 public class Controller{
     @FXML
-    private Button mainButton, SearchButton, PlayerButton;
+    private Button mainButton, searchButton,playerButton;
     @FXML
     private Pane mainPane;
 
@@ -30,4 +30,16 @@ public class Controller{
         Pane searchPane = FXMLLoader.load(getClass().getResource("../Search/Search.fxml"));
         mainPane.getChildren().setAll(searchPane);
     }
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        String path = new File("src/Main/MusicFile.mp3").getAbsolutePath();
+        media = new Media(new File(path).toURI().toString());
+        mediaPlayer = new MediaPlayer(media);
+        mediaView.setMediaPlayer(mediaPlayer);
+        mediaPlayer.setAutoPlay(false);
+
+    }
+
+
 }

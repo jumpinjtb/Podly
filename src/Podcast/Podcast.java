@@ -15,6 +15,7 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 
 
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -34,7 +35,7 @@ public class Podcast implements Initializable {
 
 
     public void MainButtonClicked(ActionEvent actionEvent) throws IOException {
-        Parent mainPane = FXMLLoader.load(getClass().getResource("Main.fxml"));
+        Parent mainPane = FXMLLoader.load(getClass().getResource("../Main/Main.fxml"));
         podcastPane.getItems().setAll(mainPane);
         
     }
