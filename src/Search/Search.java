@@ -11,6 +11,9 @@ import javafx.scene.layout.Pane;
 import RSS.RSSFeedParser;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import org.jdom2.JDOMException;
 
 import java.io.*;
@@ -48,7 +51,7 @@ public class Search {
         searchPane.getChildren().setAll(podPane);
     }
 
-    public void search() throws IOException, JDOMException {
+    public void search() throws IOException {
         String value = searchBar.getText();
 
         URL url = new URL("https://itunes.apple.com/search?term=" +
@@ -61,7 +64,7 @@ public class Search {
 
     }
 
-    private void parseJson(String json) throws IOException, JDOMException {
+    private void parseJson(String json) throws IOException {
         searchPane.getChildren().clear();
         searchPane.getChildren().addAll(toolBar);
         searchPane.getChildren().addAll(searchBar, search);
@@ -192,8 +195,11 @@ public class Search {
                 searchPane.getChildren().add(pb);
                 Thread t1 = new Thread(() -> {
                     String audioFilePath = "res/audio/" + id + "/" + item.title;
+                    File file = new File(audioFilePath);
+                    file.mkdirs();
                     try {
                         downloadAudio(item.audio, audioFilePath);
+
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
