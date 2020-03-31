@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<SplitPane fx:id = "podcastPane" dividerPositions="0.5" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Podcast.Podcast">
+<SplitPane fx:id="podcastPane" dividerPositions="0.5" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Podcast.Podcast">
     <items>
       <Pane minHeight="0.0" minWidth="0.0" prefHeight="720.0" prefWidth="640.0">
           <ToolBar prefHeight="40.0" prefWidth="636.0">
@@ -17,13 +21,24 @@
           </ToolBar>
           <ToolBar layoutY="684.0" prefHeight="26.0" prefWidth="1280.0">
               <items>
-                  <Button fx:id= "mainButton" mnemonicParsing="false" text="Main" onAction="#MainButtonClicked" />
-                  <Button fx:id= "PlayerButton" mnemonicParsing="false" text="Player" disable="true"  />
-                  <Button fx:id= "SearchButton" mnemonicParsing="false" text="Search" onAction="#SearchButtonClicked" />
+                  <Button fx:id="mainButton" mnemonicParsing="false" onAction="#MainButtonClicked" text="Main" />
+                  <Button fx:id="PlayerButton" disable="true" mnemonicParsing="false" text="Player" />
+                  <Button fx:id="SearchButton" mnemonicParsing="false" onAction="#SearchButtonClicked" text="Search" />
               </items>
           </ToolBar>
       </Pane>
-    <Pane minHeight="0.0" minWidth="0.0" prefHeight="720.0" prefWidth="640.0" />
+    <Pane minHeight="0.0" minWidth="0.0" prefHeight="720.0" prefWidth="640.0">
+         <children>
+            <ImageView fitHeight="550.0" fitWidth="550.0" layoutX="43.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" />
+            <Slider fx:id="volumeSlider" layoutX="248.0" layoutY="652.0" />
+            <Button alignment="CENTER" layoutX="268.0" layoutY="604.0" mnemonicParsing="false" onAction="#play" prefHeight="20.0" prefWidth="50.0" text="Play" textAlignment="CENTER" />
+            <Button layoutX="318.0" layoutY="604.0" mnemonicParsing="false" onAction="#pause" prefHeight="20.0" prefWidth="50.0" text="Pause" />
+            <Label layoutX="194.0" layoutY="649.0" prefHeight="16.0" prefWidth="48.0" text="Volume">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+         </children></Pane>
   </items>
 
 </SplitPane>
