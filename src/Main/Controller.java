@@ -31,15 +31,4 @@ public class Controller{
         mainPane.getChildren().setAll(searchPane);
     }
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        String path = new File("src/Main/MusicFile.mp3").getAbsolutePath();
-        media = new Media(new File(path).toURI().toString());
-        mediaPlayer = new MediaPlayer(media);
-        mediaView.setMediaPlayer(mediaPlayer);
-        mediaPlayer.setAutoPlay(false);
-
-    }
-
-
 }

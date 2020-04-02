@@ -19,7 +19,11 @@ import org.jdom2.JDOMException;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.nio.channels.Channels;
+import java.nio.channels.FileChannel;
+import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -156,16 +160,32 @@ public class Search {
         return value;
     }
 
-    private void downloadAudio(URL url, String filepath) throws IOException {
-        try (BufferedInputStream in = new BufferedInputStream(url.openStream());
-             FileOutputStream fileOutputStream = new FileOutputStream(filepath)) {
-            byte[] dataBuffer = new byte[1024];
+    private void downloadAudio(URL url, File file) throws IOException {
+
+        OutputStream output = null;
+        InputStream input = null;
+        try {
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            output = new FileOutputStream(file);
+            input = connection.getInputStream();
+
+            byte[] fileChunk = new byte[8*1024];
             int bytesRead;
-            while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
-                fileOutputStream.write(dataBuffer, 0, bytesRead);
+            while((bytesRead = input.read(fileChunk)) != -1) {
+                output.write(fileChunk, 0, bytesRead);
             }
-        } catch (IOException e) {
-            // handle exception
+            System.out.println("Done!");
+        }
+        catch (IOException e) {
+            System.out.println("Receiving file at " + url.toString() + " failed");
+        }
+        finally {
+            if(input != null) {
+                input.close();
+            }
+            if(output != null) {
+                output.close();
+            }
         }
     }
 
@@ -195,10 +215,13 @@ public class Search {
                 searchPane.getChildren().add(pb);
                 Thread t1 = new Thread(() -> {
                     String audioFilePath = "res/audio/" + id + "/" + item.title;
+                    System.out.println(item.title);
                     File file = new File(audioFilePath);
-                    file.mkdirs();
                     try {
-                        downloadAudio(item.audio, audioFilePath);
+                        file.getParentFile().mkdirs();
+                        file.createNewFile();
+                        downloadAudio(item.audio, new File(audioFilePath));
+                        System.out.println(item.audio);
 
                     } catch (IOException e) {
                         e.printStackTrace();
