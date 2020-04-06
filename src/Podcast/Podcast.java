@@ -1,5 +1,6 @@
 package Podcast;
 
+import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.event.ActionEvent;
@@ -13,8 +14,8 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
-
-
+import javafx.scene.image.ImageView;
+import javafx.scene.image.Image;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,7 +32,14 @@ public class Podcast implements Initializable {
     private MediaPlayer mediaPlayer;
     private Media media;
     @FXML
-    Slider volumeSlider;
+    private ImageView imageView;
+    @FXML
+    private Slider volumeSlider;
+    @FXML
+    private Slider seekBar;
+
+
+
 
 
     public void MainButtonClicked(ActionEvent actionEvent) throws IOException {
@@ -47,19 +55,57 @@ public class Podcast implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        String path = new File("src/Main/MusicFile.mp3").getAbsolutePath();
+        //Receives the cover art from the images folder and sets it to the ImageView.
+        Image coverArt = new Image(new File("res/images/SampleImage.jpg").toURI().toString());
+        imageView.setImage(coverArt);
+
+        //Receives the audio from the audio forder and plays it upon request.
+        String path = new File("res/audio/SampleMedia.mp3").getAbsolutePath();
         media = new Media(new File(path).toURI().toString());
         mediaPlayer = new MediaPlayer(media);
         mediaView.setMediaPlayer(mediaPlayer);
-        mediaPlayer.setAutoPlay(true);
+        mediaPlayer.setAutoPlay(false);
+
+        //Updates the current time of the currently playing media.
+        mediaPlayer.currentTimeProperty().addListener(new InvalidationListener() {
+            @Override
+            public void invalidated(Observable observable) {
+                updatedValues();
+            }
+        });
+
+        //Allows the user to seek through the playing media
+        seekBar.valueProperty().addListener(new InvalidationListener() {
+            @Override
+            public void invalidated(Observable observable) {
+                if (seekBar.isPressed()){
+                    mediaPlayer.seek(mediaPlayer.getMedia().getDuration().multiply(seekBar.getValue() / 100));
+                }
+            }
+        });
+
         volumeSlider.setValue(mediaPlayer.getVolume() * 100);
+        volumeSlider.setShowTickMarks(true);
+        volumeSlider.setShowTickLabels(true);
         volumeSlider.valueProperty().addListener(new InvalidationListener() {
             @Override
             public void invalidated(Observable observable) {
                 mediaPlayer.setVolume(volumeSlider.getValue() / 100);
             }
         });
+
     }
+
+    //Updates the value of the seekBar to be in sync with the current time of the media.
+    protected void updatedValues(){
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                seekBar.setValue(mediaPlayer.getCurrentTime().toMillis() / mediaPlayer.getTotalDuration().toMillis() * 100);
+            }
+        });
+    }
+
 
     public void play(ActionEvent event){
         mediaPlayer.play();
