@@ -12,7 +12,7 @@ import java.io.IOException;
 
 
 
-public class Controller{
+public class Controller {
     @FXML
     private Button mainButton, searchButton,playerButton;
     @FXML
