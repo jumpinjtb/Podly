@@ -11,19 +11,12 @@ import javafx.scene.layout.Pane;
 import RSS.RSSFeedParser;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-import javafx.scene.media.MediaView;
 import org.jdom2.JDOMException;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 import java.net.URLEncoder;
-import java.nio.channels.Channels;
-import java.nio.channels.FileChannel;
-import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -214,7 +207,7 @@ public class Search {
                 pb.setLayoutY(25);
                 searchPane.getChildren().add(pb);
                 Thread t1 = new Thread(() -> {
-                    String audioFilePath = "res/audio/" + id + "/" + item.title;
+                    String audioFilePath = "res/audio/" + id + "/" + item.title.replace(":", "");
                     System.out.println(item.title);
                     File file = new File(audioFilePath);
                     try {
