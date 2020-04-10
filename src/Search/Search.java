@@ -5,8 +5,10 @@ import RSS.FeedItem;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import RSS.RSSFeedParser;
 import javafx.scene.image.Image;
@@ -32,6 +34,8 @@ public class Search {
     public TextField searchBar;
     @FXML
     public ToolBar toolBar;
+    @FXML
+    public ScrollBar SearchScrollBar;
 
     private int imageWidth = 200;
     private int imageHeight = 200;
@@ -47,6 +51,7 @@ public class Search {
         Parent podPane = FXMLLoader.load(getClass().getResource("../Podcast/Podcast.fxml"));
         searchPane.getChildren().setAll(podPane);
     }
+
 
     public void search() throws IOException {
         String value = searchBar.getText();
@@ -64,7 +69,8 @@ public class Search {
     private void parseJson(String json) throws IOException {
         searchPane.getChildren().clear();
         searchPane.getChildren().addAll(toolBar);
-        searchPane.getChildren().addAll(searchBar, search);
+        searchPane.getChildren().addAll(searchBar, search, SearchScrollBar);
+
 
         //Create regex patterns
         //Gets number of results from iTunes
@@ -190,7 +196,8 @@ public class Search {
     private void openPodcast(String filePath, String id) throws JDOMException, IOException {
         searchPane.getChildren().clear();
         searchPane.getChildren().addAll(toolBar);
-        searchPane.getChildren().addAll(searchBar, search);
+        searchPane.getChildren().addAll(searchBar, search, SearchScrollBar);
+        //searchPane.setPadding(new Insets(3));
 
         RSSFeedParser parser = new RSSFeedParser(filePath);
         Feed feed = parser.readFeed(id);
@@ -230,4 +237,6 @@ public class Search {
             index++;
         }
     }
+
+
 }

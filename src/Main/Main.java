@@ -16,6 +16,7 @@ public class Main extends Application {
         primaryStage.setResizable(true);
         primaryStage.sizeToScene();
         primaryStage.show();
+        primaryStage.isResizable();
     }
 
 
