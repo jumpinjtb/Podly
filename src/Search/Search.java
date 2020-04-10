@@ -2,6 +2,8 @@ package Search;
 
 import RSS.Feed;
 import RSS.FeedItem;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -9,6 +11,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
 import RSS.RSSFeedParser;
 import javafx.scene.image.Image;
@@ -29,13 +32,14 @@ public class Search {
     @FXML
     private Button mainButton, searchButton, playerButton, search;
     @FXML
-    private Pane searchPane;
+    private Pane searchPane, innerPane;
     @FXML
     public TextField searchBar;
     @FXML
     public ToolBar toolBar;
     @FXML
-    public ScrollBar SearchScrollBar;
+    public ScrollBar scrollBar;
+
 
     private int imageWidth = 200;
     private int imageHeight = 200;
@@ -69,7 +73,8 @@ public class Search {
     private void parseJson(String json) throws IOException {
         searchPane.getChildren().clear();
         searchPane.getChildren().addAll(toolBar);
-        searchPane.getChildren().addAll(searchBar, search, SearchScrollBar);
+        searchPane.getChildren().addAll(searchBar, search);
+        searchPane.getChildren().addAll(innerPane);
 
 
         //Create regex patterns
@@ -143,7 +148,13 @@ public class Search {
             open.setLayoutY((resultDistance * i) + 20);
             open.setText("View");
 
-            searchPane.getChildren().addAll(view, label, open);
+            scrollBar.valueProperty().addListener(new ChangeListener<Number>() {
+                @Override
+                public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
+                    innerPane.setLayoutY(-t1.doubleValue());
+                }
+            });
+            innerPane.getChildren().addAll(view, label, open);
         }
     }
 
@@ -196,7 +207,7 @@ public class Search {
     private void openPodcast(String filePath, String id) throws JDOMException, IOException {
         searchPane.getChildren().clear();
         searchPane.getChildren().addAll(toolBar);
-        searchPane.getChildren().addAll(searchBar, search, SearchScrollBar);
+        searchPane.getChildren().addAll(searchBar, search);
         //searchPane.setPadding(new Insets(3));
 
         RSSFeedParser parser = new RSSFeedParser(filePath);
@@ -237,6 +248,4 @@ public class Search {
             index++;
         }
     }
-
-
 }
