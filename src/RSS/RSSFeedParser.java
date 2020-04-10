@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -39,9 +41,15 @@ public class RSSFeedParser {
         for(Element episode : items) {
             String title = episode.getChildText("title");
             String description = episode.getChildText("itunes:summary");
-            URL audio =  new URL(episode.getChild("enclosure").getAttributeValue("url"));
-            episodes.add(new FeedItem(title, description, audio));
-            System.out.println(title);
+            try {
+                URL audio = new URL(episode.getChild("enclosure").getAttributeValue("url"));
+                episodes.add(new FeedItem(title, description, audio));
+            }
+            catch (Exception e) {
+                // Edge case for No Dumb Questions
+                URL audio = new URL(episode.getChildText("link"));
+                episodes.add(new FeedItem(title, description, audio));
+            }
         }
 
         return episodes;

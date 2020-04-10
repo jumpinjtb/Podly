@@ -4,15 +4,17 @@ package Main;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.Pane;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 
 
-
-public class Controller {
+public class Controller implements Initializable {
     @FXML
     private Button mainButton, searchButton,playerButton;
     @FXML
@@ -29,5 +31,10 @@ public class Controller {
     public void SearchButtonClicked(ActionEvent actionEvent) throws IOException {
         Pane searchPane = FXMLLoader.load(getClass().getResource("../Search/Search.fxml"));
         mainPane.getChildren().setAll(searchPane);
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+
     }
 }

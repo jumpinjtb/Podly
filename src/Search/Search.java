@@ -18,6 +18,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,13 +27,18 @@ import java.io.IOException;
 
 public class Search {
     @FXML
-    private Button mainButton, searchButton, playerButton, search;
+    private Button search;
     @FXML
     private Pane searchPane;
+    private Pane scrollPane = new Pane();
     @FXML
-    public TextField searchBar;
+    private TextField searchBar;
     @FXML
-    public ToolBar toolBar;
+    private ToolBar bottomBar;
+    @FXML
+    private ToolBar topBar;
+
+    private ScrollBar scrollBar;
 
     private int imageWidth = 200;
     private int imageHeight = 200;
@@ -62,8 +69,10 @@ public class Search {
     }
 
     private void parseJson(String json) throws IOException {
+        scrollPane.getChildren().clear();
+
         searchPane.getChildren().clear();
-        searchPane.getChildren().addAll(toolBar);
+        searchPane.getChildren().addAll(bottomBar, topBar, scrollPane);
         searchPane.getChildren().addAll(searchBar, search);
 
         //Create regex patterns
@@ -87,12 +96,12 @@ public class Search {
             view.setFitHeight(imageHeight);
             view.setFitWidth(imageWidth);
             view.setLayoutX(0);
-            view.setLayoutY(resultDistance * (i));
+            view.setLayoutY(resultDistance * (i) + 45);
 
             //Set properties for label
             Label label = new Label();
             label.setLayoutX(imageWidth + 20);
-            label.setLayoutY(resultDistance * (i));
+            label.setLayoutY(resultDistance * (i) +45);
 
             //Find next occurrence of podcast name and set label
             nameMatch.find();
@@ -108,7 +117,7 @@ public class Search {
             String id = idMatch.group();
 
             byte[] artworkData = sendGetRequest(artworkURL);
-            String imgFilepath = "res/images/" + id + ".jpg";
+            String imgFilepath = "res/temp/" + id + ".jpg";
             File imgFile = new File(imgFilepath);
             imgFile.getParentFile().mkdirs();
             FileOutputStream fos = new FileOutputStream(imgFilepath);
@@ -118,7 +127,7 @@ public class Search {
 
             feedMatch.find();
             String feedURL = feedMatch.group();
-            String rssFilePath = "res/rss/" + id + ".rss";
+            String rssFilePath = "res/temp/" + id + ".rss";
             File rssFile = new File(rssFilePath);
             rssFile.getParentFile().mkdirs();
             fos = new FileOutputStream(rssFilePath);
@@ -134,12 +143,26 @@ public class Search {
                 }
             });
             open.setLayoutX(imageWidth + 20);
-            open.setLayoutY((resultDistance * i) + 20);
+            open.setLayoutY((resultDistance * i) + 60);
             open.setText("View");
 
-            searchPane.getChildren().addAll(view, label, open);
+            Button subscribe = new Button();
+            subscribe.setOnAction(click -> {
+                try {
+                    subscribe(id);
+                    subscribe.setDisable(true);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+            subscribe.setLayoutX(imageWidth + 20);
+            subscribe.setLayoutY((resultDistance * i) + 90);
+            subscribe.setText("Subscribe");
+
+            scrollPane.getChildren().addAll(view, label, open, subscribe);
         }
     }
+
 
     private byte[] sendGetRequest(URL url) throws IOException {
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -159,13 +182,20 @@ public class Search {
         InputStream input = null;
         try {
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+            int value = connection.getContentLength();
+            System.out.println(value);
+
             output = new FileOutputStream(file);
             input = connection.getInputStream();
 
             byte[] fileChunk = new byte[8*1024];
             int bytesRead;
+            int totalBytes = 0;
             while((bytesRead = input.read(fileChunk)) != -1) {
+                totalBytes += bytesRead;
                 output.write(fileChunk, 0, bytesRead);
+                System.out.println(((float)totalBytes/value) * 100 + "%");
             }
             System.out.println("Done!");
         }
@@ -189,13 +219,25 @@ public class Search {
 
     private void openPodcast(String filePath, String id) throws JDOMException, IOException {
         searchPane.getChildren().clear();
-        searchPane.getChildren().addAll(toolBar);
+        searchPane.getChildren().addAll(bottomBar);
         searchPane.getChildren().addAll(searchBar, search);
 
         RSSFeedParser parser = new RSSFeedParser(filePath);
         Feed feed = parser.readFeed(id);
 
-        ProgressIndicator pb = new ProgressIndicator();
+        Button subscribe = new Button();
+        subscribe.setOnAction(click -> {
+            try {
+                subscribe(id);
+                subscribe.setDisable(true);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        subscribe.setLayoutX(searchPane.getWidth()-80);
+        subscribe.setLayoutY(50);
+        subscribe.setText("Subscribe");
+        searchPane.getChildren().add(subscribe);
 
         int index = 0;
         for(FeedItem item: feed.episodes) {
@@ -203,9 +245,6 @@ public class Search {
             Button download = new Button();
 
             download.setOnAction(click -> {
-                pb.setProgress(ProgressIndicator.INDETERMINATE_PROGRESS);
-                pb.setLayoutY(25);
-                searchPane.getChildren().add(pb);
                 Thread t1 = new Thread(() -> {
                     String audioFilePath = "res/audio/" + id + "/" + item.title.replace(":", "");
                     System.out.println(item.title);
@@ -215,7 +254,6 @@ public class Search {
                         file.createNewFile();
                         downloadAudio(item.audio, new File(audioFilePath));
                         System.out.println(item.audio);
-
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -229,5 +267,24 @@ public class Search {
             searchPane.getChildren().addAll(title, download);
             index++;
         }
+    }
+
+    private void subscribe(String id) throws IOException {
+        String imgFilePath = "res/temp/" + id + ".jpg";
+        OutputStream newImg = new FileOutputStream("res/images/" + id + ".jpg");
+        Files.copy(Paths.get(imgFilePath), newImg);
+        File imgFile = new File(imgFilePath);
+        System.out.println(imgFile.setWritable(true));
+
+
+        if(!new File("res/rss/").exists()) {
+            new File("res/rss/").mkdirs();
+        }
+
+        String rssFilePath = "res/temp/" + id + ".rss";
+        OutputStream newRss = new FileOutputStream("res/rss/" + id + ".rss");
+        Files.copy(Paths.get("res/temp/" + id + ".rss"), newRss);
+        File rssFile = new File(rssFilePath);
+        rssFile.setWritable(true);
     }
 }

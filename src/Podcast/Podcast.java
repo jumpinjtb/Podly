@@ -11,6 +11,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
 import javafx.scene.control.SplitPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
@@ -23,6 +24,10 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class Podcast implements Initializable {
+    @FXML
+    public Pane displayPane;
+    @FXML
+    public Pane playerPane;
     @FXML
     private Button mainButton, SearchButton, PlayerButton;
     @FXML
@@ -39,13 +44,9 @@ public class Podcast implements Initializable {
     private Slider seekBar;
 
 
-
-
-
     public void MainButtonClicked(ActionEvent actionEvent) throws IOException {
         Parent mainPane = FXMLLoader.load(getClass().getResource("../Main/Main.fxml"));
         podcastPane.getItems().setAll(mainPane);
-        
     }
 
     public void SearchButtonClicked(ActionEvent actionEvent) throws IOException {
@@ -59,7 +60,7 @@ public class Podcast implements Initializable {
         Image coverArt = new Image(new File("res/images/SampleImage.jpg").toURI().toString());
         imageView.setImage(coverArt);
 
-        //Receives the audio from the audio forder and plays it upon request.
+        //Receives the audio from the audio folder and plays it upon request.
         String path = new File("res/audio/SampleMedia.mp3").getAbsolutePath();
         media = new Media(new File(path).toURI().toString());
         mediaPlayer = new MediaPlayer(media);
@@ -93,7 +94,6 @@ public class Podcast implements Initializable {
                 mediaPlayer.setVolume(volumeSlider.getValue() / 100);
             }
         });
-
     }
 
     //Updates the value of the seekBar to be in sync with the current time of the media.
@@ -106,10 +106,10 @@ public class Podcast implements Initializable {
         });
     }
 
-
     public void play(ActionEvent event){
         mediaPlayer.play();
     }
+
     public void pause(ActionEvent event){
         mediaPlayer.pause();
     }
