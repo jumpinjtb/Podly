@@ -223,7 +223,7 @@ public class Search {
         searchPane.getChildren().addAll(searchBar, search);
 
         RSSFeedParser parser = new RSSFeedParser(filePath);
-        Feed feed = parser.readFeed(id);
+        Feed feed = parser.readFeed();
 
         Button subscribe = new Button();
         subscribe.setOnAction(click -> {
@@ -246,6 +246,8 @@ public class Search {
 
             download.setOnAction(click -> {
                 Thread t1 = new Thread(() -> {
+                    if(!new File("res/images" + id + ".jpg").exists()) {
+                    }
                     String audioFilePath = "res/audio/" + id + "/" + item.title.replace(":", "");
                     System.out.println(item.title);
                     File file = new File(audioFilePath);
@@ -270,12 +272,14 @@ public class Search {
     }
 
     private void subscribe(String id) throws IOException {
+        if(!new File("res/images/").exists()) {
+            new File("res/images").mkdirs();
+        }
+
         String imgFilePath = "res/temp/" + id + ".jpg";
         OutputStream newImg = new FileOutputStream("res/images/" + id + ".jpg");
         Files.copy(Paths.get(imgFilePath), newImg);
         File imgFile = new File(imgFilePath);
-        System.out.println(imgFile.setWritable(true));
-
 
         if(!new File("res/rss/").exists()) {
             new File("res/rss/").mkdirs();
@@ -285,6 +289,5 @@ public class Search {
         OutputStream newRss = new FileOutputStream("res/rss/" + id + ".rss");
         Files.copy(Paths.get("res/temp/" + id + ".rss"), newRss);
         File rssFile = new File(rssFilePath);
-        rssFile.setWritable(true);
     }
 }

@@ -23,21 +23,25 @@ public class Main extends Application {
             @Override
             public void handle(WindowEvent windowEvent) {
                 File folder = new File("res/temp/");
-                String[] files = folder.list();
-                for(String fileName: files) {
-                    fileName = "res/temp/" + fileName;
-                    try {
-                        File file = new File(fileName);
-                        Files.delete(Paths.get(file.getAbsolutePath()));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                if(folder.exists()) {
+                    String[] files = folder.list();
+                    if (files != null) {
+                        for (String fileName : files) {
+                            fileName = "res/temp/" + fileName;
+                            try {
+                                File file = new File(fileName);
+                                Files.delete(Paths.get(file.getAbsolutePath()));
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
 
-                }
-                try {
-                    Files.delete(Paths.get("res/temp"));
-                } catch (IOException e) {
-                    e.printStackTrace();
+                        }
+                        try {
+                            Files.delete(Paths.get("res/temp"));
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
                 Platform.exit();
                 System.exit(0);

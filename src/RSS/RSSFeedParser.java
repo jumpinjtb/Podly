@@ -17,24 +17,30 @@ public class RSSFeedParser {
     private Element root;
 
     public RSSFeedParser(String feed) {
-        this.feed = new File(feed);
+        this.feed = new File(feed).getAbsoluteFile();
     }
 
-    public Feed readFeed(String podID) throws JDOMException, IOException {
+    public Feed readFeed() throws JDOMException, IOException {
         SAXBuilder saxBuilder = new SAXBuilder();
         Document document = saxBuilder.build(feed);
         this.root = document.getRootElement();
 
-        String title = root.getChildText("title");
-        String description = root.getChildText("description");
-        String link = root.getChildText("itunes:new-feed-url");
+        String title = root.getChild("channel").getChildText("title");
+        String description = root.getChild("channel").getChildText("itunes:subtitle");
+        String link = root.getChild("channel").getChildText("link");
 
-        List<FeedItem> episodes = readEpisodes(this.feed);
+        List<FeedItem> episodes = readEpisodes();
 
-        return new Feed(title, podID, link, description, episodes);
+        String id = "";
+        int periodIndex = feed.getName().indexOf('.');
+        if(periodIndex != -1) {
+            id = feed.getName().substring(0, periodIndex);
+        }
+
+        return new Feed(title, id, link, description, episodes);
     }
 
-    private List<FeedItem> readEpisodes(File feed) throws MalformedURLException {
+    private List<FeedItem> readEpisodes() throws MalformedURLException {
         List<FeedItem> episodes = new LinkedList<>();
 
         List<Element> items = root.getChild("channel").getChildren("item");
