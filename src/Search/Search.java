@@ -246,8 +246,6 @@ public class Search {
 
             download.setOnAction(click -> {
                 Thread t1 = new Thread(() -> {
-                    if(!new File("res/images" + id + ".jpg").exists()) {
-                    }
                     String audioFilePath = "res/audio/" + id + "/" + item.title.replace(":", "");
                     System.out.println(item.title);
                     File file = new File(audioFilePath);

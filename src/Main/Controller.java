@@ -8,6 +8,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
@@ -79,7 +80,35 @@ public class Controller implements Initializable {
                         name.setLayoutY(resultDistance * i + 45);
                         name.setText(podName);
 
-                        mainPane.getChildren().addAll(view, name);
+                        Button open = new Button();
+                        open.setOnAction(click -> {
+                            Parent pane = null;
+                            try {
+                                pane = FXMLLoader.load(getClass().getResource("../Podcast/Podcast.fxml"));
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            List<FeedItem> episodes =  feed.getEpisodes();
+                            int index = 0;
+                            for(FeedItem episode: episodes) {
+                                Label title = new Label(episode.title);
+                                Button play = new Button();
+                                play.setOnAction(click1 -> {
+                                    //TODO play audio
+                                });
+                                title.setLayoutY(resultDistance * index);
+                                play.setLayoutY(resultDistance * index + 15);
+                                play.setText("Download");
+                                index++;
+                            }
+
+                            mainPane.getChildren().setAll(pane);
+                        });
+                        open.setLayoutX(imageWidth + 20);
+                        open.setLayoutY(resultDistance * i + 60);
+                        open.setText("Open");
+
+                        mainPane.getChildren().addAll(view, name, open);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
