@@ -1,6 +1,7 @@
 package Main;
 
 
+import Podcast.Podcast;
 import RSS.Feed;
 import RSS.FeedItem;
 import RSS.RSSFeedParser;
@@ -81,27 +82,15 @@ public class Controller implements Initializable {
                         name.setText(podName);
 
                         Button open = new Button();
+                        String finalId = id;
                         open.setOnAction(click -> {
+                            Podcast.setPodcast(finalId);
                             Parent pane = null;
                             try {
                                 pane = FXMLLoader.load(getClass().getResource("../Podcast/Podcast.fxml"));
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
-                            List<FeedItem> episodes =  feed.getEpisodes();
-                            int index = 0;
-                            for(FeedItem episode: episodes) {
-                                Label title = new Label(episode.title);
-                                Button play = new Button();
-                                play.setOnAction(click1 -> {
-                                    //TODO play audio
-                                });
-                                title.setLayoutY(resultDistance * index);
-                                play.setLayoutY(resultDistance * index + 15);
-                                play.setText("Download");
-                                index++;
-                            }
-
                             mainPane.getChildren().setAll(pane);
                         });
                         open.setLayoutX(imageWidth + 20);

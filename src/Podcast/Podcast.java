@@ -1,5 +1,8 @@
 package Podcast;
 
+import RSS.Feed;
+import RSS.FeedItem;
+import RSS.RSSFeedParser;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
@@ -9,6 +12,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.Pane;
@@ -17,10 +21,12 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.Image;
+import org.jdom2.JDOMException;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class Podcast implements Initializable {
@@ -42,6 +48,9 @@ public class Podcast implements Initializable {
     private Slider volumeSlider;
     @FXML
     private Slider seekBar;
+
+    private static String podID = null;
+    private int resultDistance = 220;
 
 
     public void MainButtonClicked(ActionEvent actionEvent) throws IOException {
@@ -94,6 +103,38 @@ public class Podcast implements Initializable {
                 mediaPlayer.setVolume(volumeSlider.getValue() / 100);
             }
         });
+
+        if(podID != null) {
+            String filename = "res/rss/" + podID + ".rss";
+            RSSFeedParser parser = new RSSFeedParser(filename);
+            Feed feed = null;
+            try {
+                feed = parser.readFeed();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            assert feed != null;
+            List<FeedItem> episodes = feed.getEpisodes();
+            int index = 0;
+            for(FeedItem episode: episodes) {
+                Label title = new Label(episode.title);
+                Button play = new Button();
+                play.setOnAction(click1 -> {
+                    //TODO play audio
+                });
+                title.setLayoutY(resultDistance * index + 40);
+                play.setLayoutY(resultDistance * index + 55);
+                play.setText("Play");
+                if(!new File("res/audio/" + podID + episode.title.replace(":", "")).exists()) {
+                    play.setDisable(true);
+                }
+
+                
+                index++;
+
+                displayPane.getChildren().addAll(title, play);
+            }
+        }
     }
 
     //Updates the value of the seekBar to be in sync with the current time of the media.
@@ -112,5 +153,9 @@ public class Podcast implements Initializable {
 
     public void pause(ActionEvent event){
         mediaPlayer.pause();
+    }
+
+    public static void setPodcast(String id) {
+        podID = id;
     }
 }
