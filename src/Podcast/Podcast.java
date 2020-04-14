@@ -21,7 +21,6 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.Image;
-import org.jdom2.JDOMException;
 
 import java.io.File;
 import java.io.IOException;
@@ -117,19 +116,22 @@ public class Podcast implements Initializable {
             List<FeedItem> episodes = feed.getEpisodes();
             int index = 0;
             for(FeedItem episode: episodes) {
+                File audio = new File("res/audio/" + podID +  "/" +
+                        episode.title.replace(":", "") + ".mp3").getAbsoluteFile();
+                System.out.println(audio.toString());
                 Label title = new Label(episode.title);
                 Button play = new Button();
                 play.setOnAction(click1 -> {
-                    //TODO play audio
+                    media = new Media(audio.toURI().toString());
+                    mediaPlayer.play();
                 });
                 title.setLayoutY(resultDistance * index + 40);
                 play.setLayoutY(resultDistance * index + 55);
                 play.setText("Play");
-                if(!new File("res/audio/" + podID + episode.title.replace(":", "")).exists()) {
+                if(!audio.exists()) {
                     play.setDisable(true);
                 }
 
-                
                 index++;
 
                 displayPane.getChildren().addAll(title, play);
@@ -148,6 +150,7 @@ public class Podcast implements Initializable {
     }
 
     public void play(ActionEvent event){
+        mediaPlayer.seek(mediaPlayer.getMedia().getDuration().multiply(seekBar.getValue() / 100));
         mediaPlayer.play();
     }
 

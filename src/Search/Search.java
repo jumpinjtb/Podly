@@ -43,7 +43,7 @@ public class Search {
     private int imageWidth = 200;
     private int imageHeight = 200;
     private int resultDistance = 220;
-
+    private int episodeResult = 60;
 
     public void MainButtonClicked(ActionEvent actionEvent) throws IOException {
         Parent mainPane = FXMLLoader.load(getClass().getResource("../Main/Main.fxml"));
@@ -246,7 +246,7 @@ public class Search {
 
             download.setOnAction(click -> {
                 Thread t1 = new Thread(() -> {
-                    String audioFilePath = "res/audio/" + id + "/" + item.title.replace(":", "");
+                    String audioFilePath = "res/audio/" + id + "/" + item.title.replace(":", "") + ".mp3";
                     System.out.println(item.title);
                     File file = new File(audioFilePath);
                     try {
@@ -261,8 +261,8 @@ public class Search {
                 t1.start();
             });
 
-            title.setLayoutY(resultDistance * index);
-            download.setLayoutY(resultDistance * index + 15);
+            title.setLayoutY(episodeResult * index);
+            download.setLayoutY(episodeResult * index + 15);
             download.setText("Download");
             searchPane.getChildren().addAll(title, download);
             index++;
