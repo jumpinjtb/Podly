@@ -22,8 +22,8 @@ import javafx.scene.media.MediaView;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.Image;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -112,29 +112,63 @@ public class Podcast implements Initializable {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
             assert feed != null;
             List<FeedItem> episodes = feed.getEpisodes();
             int index = 0;
             for(FeedItem episode: episodes) {
                 File audio = new File("res/audio/" + podID +  "/" +
                         episode.title.replace(":", "") + ".mp3").getAbsoluteFile();
-                System.out.println(audio.toString());
                 Label title = new Label(episode.title);
                 Button play = new Button();
+
                 play.setOnAction(click1 -> {
                     media = new Media(audio.toURI().toString());
+                    mediaPlayer = new MediaPlayer(media);
+                    mediaView.setMediaPlayer(mediaPlayer);
                     mediaPlayer.play();
                 });
+
                 title.setLayoutY(resultDistance * index + 40);
                 play.setLayoutY(resultDistance * index + 55);
                 play.setText("Play");
+
+                Button download = new Button();
+                download.setOnAction(click -> {
+                    Thread t1 = new Thread(() -> {
+                        String audioFilePath = "res/audio/" + podID + "/" + episode.title.replace(":", "") + ".mp3";
+                        System.out.println(episode.title);
+                        File file = new File(audioFilePath);
+                        try {
+                            file.getParentFile().mkdirs();
+                            file.createNewFile();
+                            downloadAudio(episode.audio, new File(audioFilePath));
+                            System.out.println(episode.audio);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    });
+                    t1.start();
+
+                });
+
+                download.setLayoutX(40);
+                download.setLayoutY(resultDistance * index + 55);
+                download.setText("Download");
+
                 if(!audio.exists()) {
                     play.setDisable(true);
+                    download.setDisable(false);
                 }
+                else {
+                    play.setDisable(false);
+                    download.setDisable(true);
+                }
+
 
                 index++;
 
-                displayPane.getChildren().addAll(title, play);
+                displayPane.getChildren().addAll(title, play, download);
             }
         }
     }
@@ -161,4 +195,41 @@ public class Podcast implements Initializable {
     public static void setPodcast(String id) {
         podID = id;
     }
+
+    private void downloadAudio(URL url, File file) throws IOException {
+
+        OutputStream output = null;
+        InputStream input = null;
+        try {
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+            int value = connection.getContentLength();
+            System.out.println(value);
+
+            output = new FileOutputStream(file);
+            input = connection.getInputStream();
+
+            byte[] fileChunk = new byte[8*1024];
+            int bytesRead;
+            int totalBytes = 0;
+            while((bytesRead = input.read(fileChunk)) != -1) {
+                totalBytes += bytesRead;
+                output.write(fileChunk, 0, bytesRead);
+                System.out.println(((float)totalBytes/value) * 100 + "%");
+            }
+            System.out.println("Done!");
+        }
+        catch (IOException e) {
+            System.out.println("Receiving file at " + url.toString() + " failed");
+        }
+        finally {
+            if(input != null) {
+                input.close();
+            }
+            if(output != null) {
+                output.close();
+            }
+        }
+    }
+
 }

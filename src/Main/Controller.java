@@ -3,7 +3,6 @@ package Main;
 
 import Podcast.Podcast;
 import RSS.Feed;
-import RSS.FeedItem;
 import RSS.RSSFeedParser;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
