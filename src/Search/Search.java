@@ -2,16 +2,12 @@ package Search;
 
 import RSS.Feed;
 import RSS.FeedItem;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.input.ScrollEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import RSS.RSSFeedParser;
 import javafx.scene.image.Image;
@@ -32,23 +28,23 @@ import java.io.IOException;
 
 public class Search {
     @FXML
-    private Button search;
+    private Button search, mainButton, playerButton, searchButton;
     @FXML
-
-    private Pane searchPane, innerPane;
     private Pane searchPane;
-    private Pane scrollPane = new Pane();
     @FXML
     private TextField searchBar;
     @FXML
+    private ScrollPane resultPane;
+    @FXML
+    private AnchorPane container;
 
     @FXML
     public ScrollBar scrollBar;
-    private ToolBar bottomBar;
-    @FXML
-    private ToolBar topBar;
 
-    private ScrollBar scrollBar;
+    @FXML
+    private ToolBar topBar,bottomBar,toolBar;
+
+
 
     private int imageWidth = 200;
     private int imageHeight = 200;
@@ -80,12 +76,9 @@ public class Search {
     }
 
     private void parseJson(String json) throws IOException {
-        scrollPane.getChildren().clear();
 
-        searchPane.getChildren().clear();
-        searchPane.getChildren().addAll(bottomBar, topBar, scrollPane);
-        searchPane.getChildren().addAll(searchBar, search);
-        searchPane.getChildren().addAll(innerPane);
+        //searchPane.getChildren().addAll(bottomBar, topBar);
+       // searchPane.getChildren().addAll(searchBar, search);
 
 
         //Create regex patterns
@@ -173,15 +166,8 @@ public class Search {
             subscribe.setLayoutY((resultDistance * i) + 90);
             subscribe.setText("Subscribe");
 
-            scrollPane.getChildren().addAll(view, label, open, subscribe);
-          
-           scrollBar.valueProperty().addListener(new ChangeListener<Number>() {
-                @Override
-                public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
-                    innerPane.setLayoutY(-t1.doubleValue());
-                }
-            });
-            innerPane.getChildren().addAll(view, label, open);
+            container.getChildren().addAll(view, open, label);
+            resultPane.setContent(container);
 
         }
     }
@@ -241,10 +227,9 @@ public class Search {
     }
 
     private void openPodcast(String filePath, String id) throws JDOMException, IOException {
-        searchPane.getChildren().clear();
         searchPane.getChildren().addAll(bottomBar);
         searchPane.getChildren().addAll(searchBar, search);
-        //searchPane.setPadding(new Insets(3));
+
 
         RSSFeedParser parser = new RSSFeedParser(filePath);
         Feed feed = parser.readFeed();
