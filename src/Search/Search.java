@@ -2,11 +2,16 @@ package Search;
 
 import RSS.Feed;
 import RSS.FeedItem;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
 import RSS.RSSFeedParser;
 import javafx.scene.image.Image;
@@ -29,11 +34,16 @@ public class Search {
     @FXML
     private Button search;
     @FXML
+
+    private Pane searchPane, innerPane;
     private Pane searchPane;
     private Pane scrollPane = new Pane();
     @FXML
     private TextField searchBar;
     @FXML
+
+    @FXML
+    public ScrollBar scrollBar;
     private ToolBar bottomBar;
     @FXML
     private ToolBar topBar;
@@ -55,6 +65,7 @@ public class Search {
         searchPane.getChildren().setAll(podPane);
     }
 
+
     public void search() throws IOException {
         String value = searchBar.getText();
 
@@ -74,6 +85,8 @@ public class Search {
         searchPane.getChildren().clear();
         searchPane.getChildren().addAll(bottomBar, topBar, scrollPane);
         searchPane.getChildren().addAll(searchBar, search);
+        searchPane.getChildren().addAll(innerPane);
+
 
         //Create regex patterns
         //Gets number of results from iTunes
@@ -146,6 +159,7 @@ public class Search {
             open.setLayoutY((resultDistance * i) + 60);
             open.setText("View");
 
+
             Button subscribe = new Button();
             subscribe.setOnAction(click -> {
                 try {
@@ -160,6 +174,15 @@ public class Search {
             subscribe.setText("Subscribe");
 
             scrollPane.getChildren().addAll(view, label, open, subscribe);
+          
+           scrollBar.valueProperty().addListener(new ChangeListener<Number>() {
+                @Override
+                public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
+                    innerPane.setLayoutY(-t1.doubleValue());
+                }
+            });
+            innerPane.getChildren().addAll(view, label, open);
+
         }
     }
 
@@ -221,6 +244,7 @@ public class Search {
         searchPane.getChildren().clear();
         searchPane.getChildren().addAll(bottomBar);
         searchPane.getChildren().addAll(searchBar, search);
+        //searchPane.setPadding(new Insets(3));
 
         RSSFeedParser parser = new RSSFeedParser(filePath);
         Feed feed = parser.readFeed();
