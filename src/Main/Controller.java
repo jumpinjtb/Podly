@@ -11,10 +11,13 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.media.MediaView;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,6 +29,9 @@ import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
 
+    @FXML
+    public AnchorPane container;
+    public ScrollPane resultPane;
     @FXML
     private Button mainButton, searchButton, playerButton;
     @FXML
@@ -98,7 +104,8 @@ public class Controller implements Initializable {
                         open.setLayoutY(resultDistance * i + 60);
                         open.setText("Open");
 
-                        mainPane.getChildren().addAll(view, name, open);
+                        container.getChildren().addAll(view, name, open);
+                        resultPane.setContent(container);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

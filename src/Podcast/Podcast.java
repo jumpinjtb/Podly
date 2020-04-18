@@ -25,8 +25,6 @@ import javafx.scene.image.Image;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -120,7 +118,6 @@ public class Podcast implements Initializable {
             List<FeedItem> episodes = feed.getEpisodes();
             int index = 0;
             for(FeedItem episode: episodes) {
-                String audioFilePath = "res/audio/" + podID + "/" + episode.title.replace(":", "") + ".mp3";
                 File audio = new File("res/audio/" + podID +  "/" +
                         episode.title.replace(":", "") + ".mp3").getAbsoluteFile();
                 Label title = new Label(episode.title);
@@ -140,6 +137,7 @@ public class Podcast implements Initializable {
                 Button download = new Button();
                 download.setOnAction(click -> {
                     Thread t1 = new Thread(() -> {
+                        String audioFilePath = "res/audio/" + podID + "/" + episode.title.replace(":", "") + ".mp3";
                         System.out.println(episode.title);
                         File file = new File(audioFilePath);
                         try {
@@ -159,39 +157,19 @@ public class Podcast implements Initializable {
                 download.setLayoutY(resultDistance * index + 55);
                 download.setText("Download");
 
-                Button delete = new Button();
-                delete.setOnAction(click -> {
-                    File file = new File(audioFilePath).getAbsoluteFile();
-                    if(file.exists()) {
-                        try {
-                            Files.delete(Paths.get(audioFilePath));
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        download.setDisable(false);
-                        play.setDisable(true);
-                        delete.setDisable(true);
-                    }
-                });
-                delete.setLayoutX(115);
-                delete.setLayoutY(resultDistance * index + 55);
-                delete.setText("Delete");
-
                 if(!audio.exists()) {
                     play.setDisable(true);
                     download.setDisable(false);
-                    delete.setDisable(true);
                 }
                 else {
                     play.setDisable(false);
                     download.setDisable(true);
-                    delete.setDisable(false);
                 }
 
 
                 index++;
 
-                displayPane.getChildren().addAll(title, play, download, delete);
+                displayPane.getChildren().addAll(title, play, download);
             }
         }
     }

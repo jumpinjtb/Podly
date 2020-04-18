@@ -2,16 +2,12 @@ package Search;
 
 import RSS.Feed;
 import RSS.FeedItem;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.input.ScrollEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import RSS.RSSFeedParser;
 import javafx.scene.image.Image;
@@ -32,20 +28,25 @@ import java.io.IOException;
 
 public class Search {
     @FXML
-    private Button search;
+    private Button search, mainButton, playerButton, searchButton;
     @FXML
-
     private Pane searchPane;
-    //@FXML
-    //private Pane innerPane;
-    private Pane scrollPane = new Pane();
     @FXML
     private TextField searchBar;
+    @FXML
+    private ScrollPane resultPane;
+    @FXML
+    private AnchorPane container;
+
+    @FXML
+    public ScrollBar scrollBar;
+
 
     @FXML
     private ToolBar bottomBar;
     @FXML
-    private ToolBar topBar;
+    private ToolBar topBar,bottomBar,toolBar;
+
 
 
     private int imageWidth = 200;
@@ -78,11 +79,11 @@ public class Search {
     }
 
     private void parseJson(String json) throws IOException {
+
         searchPane.getChildren().clear();
         searchPane.getChildren().addAll(bottomBar, topBar, scrollPane);
         searchPane.getChildren().addAll(searchBar, search);
-        //searchPane.getChildren().addAll(innerPane);
-
+        
 
         //Create regex patterns
         //Gets number of results from iTunes
@@ -169,7 +170,11 @@ public class Search {
             subscribe.setLayoutY((resultDistance * i) + 90);
             subscribe.setText("Subscribe");
 
-            scrollPane.getChildren().addAll(view, label, open, subscribe);
+
+
+            container.getChildren().addAll(view, open, label,subscribe);
+            resultPane.setContent(container);
+
 
             searchPane.getChildren().addAll(view, label, open);
         }
@@ -230,10 +235,9 @@ public class Search {
     }
 
     private void openPodcast(String filePath, String id) throws JDOMException, IOException {
-        searchPane.getChildren().clear();
         searchPane.getChildren().addAll(bottomBar);
         searchPane.getChildren().addAll(searchBar, search);
-        //searchPane.setPadding(new Insets(3));
+
 
         RSSFeedParser parser = new RSSFeedParser(filePath);
         Feed feed = parser.readFeed();
@@ -247,10 +251,10 @@ public class Search {
                 e.printStackTrace();
             }
         });
-        subscribe.setLayoutX(searchPane.getWidth()-80);
+        subscribe.setLayoutX(container.getWidth()-80);
         subscribe.setLayoutY(50);
         subscribe.setText("Subscribe");
-        searchPane.getChildren().add(subscribe);
+        container.getChildren().add(subscribe);
 
         int index = 0;
         for(FeedItem item: feed.episodes) {
@@ -277,7 +281,8 @@ public class Search {
             title.setLayoutY(episodeResult * index);
             download.setLayoutY(episodeResult * index + 15);
             download.setText("Download");
-            searchPane.getChildren().addAll(title, download);
+            container.getChildren().addAll(title, download);
+            resultPane.setContent(container);
             index++;
         }
     }
@@ -301,4 +306,5 @@ public class Search {
         Files.copy(Paths.get("res/temp/" + id + ".rss"), newRss);
         File rssFile = new File(rssFilePath);
     }
+
 }
