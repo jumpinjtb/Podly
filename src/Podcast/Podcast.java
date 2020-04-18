@@ -57,6 +57,7 @@ public class Podcast implements Initializable {
     public void MainButtonClicked(ActionEvent actionEvent) throws IOException {
         Parent mainPane = FXMLLoader.load(getClass().getResource("../Main/Main.fxml"));
         podcastPane.getItems().setAll(mainPane);
+
     }
 
     public void SearchButtonClicked(ActionEvent actionEvent) throws IOException {
@@ -255,3 +256,4 @@ public class Podcast implements Initializable {
     }
 
 }
+

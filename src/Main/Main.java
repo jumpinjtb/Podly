@@ -6,6 +6,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -49,9 +50,10 @@ public class Main extends Application {
         });
         primaryStage.setTitle("Podly");
         primaryStage.setScene(new Scene(root));
-        primaryStage.setResizable(true);
-        primaryStage.sizeToScene();
+        primaryStage.setResizable(false);
         primaryStage.show();
+        Image icon = new Image("Main/PlayButton.png");
+        primaryStage.getIcons().add(icon);
     }
 
 

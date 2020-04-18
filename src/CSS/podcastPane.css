@@ -1,0 +1,12 @@
+#podcastPane
+{
+    -fx-background-color: #2C3539;
+}
+.label
+{
+    -fx-text-fill: #00FFFF;
+}
+.tool-bar
+{
+    -fx-text-fill: #00FFFF;
+}

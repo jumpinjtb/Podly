@@ -23,7 +23,9 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 
+
 public class Controller implements Initializable {
+
     @FXML
     private Button mainButton, searchButton, playerButton;
     @FXML
@@ -45,6 +47,7 @@ public class Controller implements Initializable {
         Pane searchPane = FXMLLoader.load(getClass().getResource("../Search/Search.fxml"));
         mainPane.getChildren().setAll(searchPane);
     }
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -105,3 +108,4 @@ public class Controller implements Initializable {
         }
     }
 }
+
