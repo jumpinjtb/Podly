@@ -35,20 +35,18 @@ public class Search {
     private Button search;
     @FXML
 
-    private Pane searchPane, innerPane;
     private Pane searchPane;
+    //@FXML
+    //private Pane innerPane;
     private Pane scrollPane = new Pane();
     @FXML
     private TextField searchBar;
-    @FXML
 
     @FXML
-    public ScrollBar scrollBar;
     private ToolBar bottomBar;
     @FXML
     private ToolBar topBar;
 
-    private ScrollBar scrollBar;
 
     private int imageWidth = 200;
     private int imageHeight = 200;
@@ -80,12 +78,10 @@ public class Search {
     }
 
     private void parseJson(String json) throws IOException {
-        scrollPane.getChildren().clear();
-
         searchPane.getChildren().clear();
         searchPane.getChildren().addAll(bottomBar, topBar, scrollPane);
         searchPane.getChildren().addAll(searchBar, search);
-        searchPane.getChildren().addAll(innerPane);
+        //searchPane.getChildren().addAll(innerPane);
 
 
         //Create regex patterns
@@ -174,15 +170,8 @@ public class Search {
             subscribe.setText("Subscribe");
 
             scrollPane.getChildren().addAll(view, label, open, subscribe);
-          
-           scrollBar.valueProperty().addListener(new ChangeListener<Number>() {
-                @Override
-                public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
-                    innerPane.setLayoutY(-t1.doubleValue());
-                }
-            });
-            innerPane.getChildren().addAll(view, label, open);
 
+            searchPane.getChildren().addAll(view, label, open);
         }
     }
 
