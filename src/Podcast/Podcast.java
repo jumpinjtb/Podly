@@ -11,10 +11,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
-import javafx.scene.control.SplitPane;
+import javafx.scene.control.*;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -33,6 +31,8 @@ public class Podcast implements Initializable {
     public Pane displayPane;
     @FXML
     public Pane playerPane;
+    public AnchorPane container;
+    public ScrollPane resultPane;
     @FXML
     private Button mainButton, SearchButton, PlayerButton;
     @FXML
@@ -65,10 +65,19 @@ public class Podcast implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        //Receives the cover art from the images folder and sets it to the ImageView.
-        Image coverArt = new Image(new File("res/images/SampleImage.jpg").toURI().toString());
-        imageView.setImage(coverArt);
-
+        String fileName = "";
+        try {
+            fileName = "res/rss/" + podID + ".rss";
+            String imageName = "res/images/" + podID + ".jpg";
+            RSSFeedParser parser = new RSSFeedParser(fileName);
+            Feed feed = parser.readFeed();
+            File image = new File(imageName);
+            imageView.setImage(new Image(new FileInputStream(image.getAbsoluteFile())));
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
         //Receives the audio from the audio folder and plays it upon request.
         String path = new File("res/audio/SampleMedia.mp3").getAbsolutePath();
         media = new Media(new File(path).toURI().toString());
@@ -116,12 +125,14 @@ public class Podcast implements Initializable {
 
             assert feed != null;
             List<FeedItem> episodes = feed.getEpisodes();
-            int index = 0;
+           int index = 0;
             for(FeedItem episode: episodes) {
                 File audio = new File("res/audio/" + podID +  "/" +
                         episode.title.replace(":", "") + ".mp3").getAbsoluteFile();
                 Label title = new Label(episode.title);
                 Button play = new Button();
+                //Receives the cover art from the images folder and sets it to the ImageView.
+
 
                 play.setOnAction(click1 -> {
                     media = new Media(audio.toURI().toString());
@@ -169,7 +180,8 @@ public class Podcast implements Initializable {
 
                 index++;
 
-                displayPane.getChildren().addAll(title, play, download);
+                container.getChildren().addAll(title, play, download);
+                resultPane.setContent(container);
             }
         }
     }

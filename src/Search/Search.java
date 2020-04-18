@@ -166,7 +166,8 @@ public class Search {
             subscribe.setLayoutY((resultDistance * i) + 90);
             subscribe.setText("Subscribe");
 
-            container.getChildren().addAll(view, open, label);
+
+            container.getChildren().addAll(view, open, label,subscribe);
             resultPane.setContent(container);
 
         }
@@ -243,10 +244,10 @@ public class Search {
                 e.printStackTrace();
             }
         });
-        subscribe.setLayoutX(searchPane.getWidth()-80);
+        subscribe.setLayoutX(container.getWidth()-80);
         subscribe.setLayoutY(50);
         subscribe.setText("Subscribe");
-        searchPane.getChildren().add(subscribe);
+        container.getChildren().add(subscribe);
 
         int index = 0;
         for(FeedItem item: feed.episodes) {
@@ -273,7 +274,8 @@ public class Search {
             title.setLayoutY(episodeResult * index);
             download.setLayoutY(episodeResult * index + 15);
             download.setText("Download");
-            searchPane.getChildren().addAll(title, download);
+            container.getChildren().addAll(title, download);
+            resultPane.setContent(container);
             index++;
         }
     }
@@ -297,4 +299,5 @@ public class Search {
         Files.copy(Paths.get("res/temp/" + id + ".rss"), newRss);
         File rssFile = new File(rssFilePath);
     }
+
 }

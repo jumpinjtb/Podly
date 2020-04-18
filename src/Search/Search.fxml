@@ -18,9 +18,9 @@
         <Button fx:id="playerButton" mnemonicParsing="false" onAction="#PlayerButtonClicked" text="Player" />
         <Button fx:id="searchButton" disable="true" mnemonicParsing="false" text="Search" />
     </ToolBar>
-   <ScrollPane fx:id="resultPane" layoutY="40.0" prefHeight="644.0" prefWidth="1280.0" vbarPolicy="ALWAYS">
+   <ScrollPane fx:id="resultPane" layoutY="40.0" prefHeight="644.0" prefWidth="1280.0" vbarPolicy="ALWAYS" hbarPolicy="NEVER" stylesheets="@../CSS/resultPane.css">
       <content>
-         <AnchorPane fx:id="container" prefHeight="643.0" prefWidth="1266.0" />
+         <AnchorPane fx:id="container" prefHeight="643.0" prefWidth="1266.0" stylesheets="@../CSS/container.css"/>
       </content>
    </ScrollPane>
 </Pane>
