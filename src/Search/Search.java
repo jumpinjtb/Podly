@@ -41,6 +41,9 @@ public class Search {
     @FXML
     public ScrollBar scrollBar;
 
+
+    @FXML
+    private ToolBar bottomBar;
     @FXML
     private ToolBar topBar,bottomBar,toolBar;
 
@@ -77,9 +80,10 @@ public class Search {
 
     private void parseJson(String json) throws IOException {
 
-        //searchPane.getChildren().addAll(bottomBar, topBar);
-       // searchPane.getChildren().addAll(searchBar, search);
-
+        searchPane.getChildren().clear();
+        searchPane.getChildren().addAll(bottomBar, topBar, scrollPane);
+        searchPane.getChildren().addAll(searchBar, search);
+        
 
         //Create regex patterns
         //Gets number of results from iTunes
@@ -167,9 +171,12 @@ public class Search {
             subscribe.setText("Subscribe");
 
 
+
             container.getChildren().addAll(view, open, label,subscribe);
             resultPane.setContent(container);
 
+
+            searchPane.getChildren().addAll(view, label, open);
         }
     }
 
