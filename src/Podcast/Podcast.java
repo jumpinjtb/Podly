@@ -166,7 +166,6 @@ public class Podcast implements Initializable {
                     download.setDisable(true);
                 }
 
-
                 index++;
 
                 displayPane.getChildren().addAll(title, play, download);
