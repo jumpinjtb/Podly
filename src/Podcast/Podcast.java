@@ -22,11 +22,17 @@ import javafx.scene.media.MediaView;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.Image;
 
+import javax.xml.transform.Result;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.CompletionService;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorCompletionService;
 
 public class Podcast implements Initializable {
     @FXML
@@ -122,6 +128,8 @@ public class Podcast implements Initializable {
                         episode.title.replace(":", "") + ".mp3").getAbsoluteFile();
                 Label title = new Label(episode.title);
                 Button play = new Button();
+                Button download = new Button();
+                Button delete = new Button();
 
                 play.setOnAction(click1 -> {
                     media = new Media(audio.toURI().toString());
@@ -134,7 +142,6 @@ public class Podcast implements Initializable {
                 play.setLayoutY(resultDistance * index + 55);
                 play.setText("Play");
 
-                Button download = new Button();
                 download.setOnAction(click -> {
                     Thread t1 = new Thread(() -> {
                         String audioFilePath = "res/audio/" + podID + "/" + episode.title.replace(":", "") + ".mp3";
@@ -150,25 +157,45 @@ public class Podcast implements Initializable {
                         }
                     });
                     t1.start();
-
+                    download.setDisable(true);
+                    play.setDisable(false);
+                    delete.setDisable(false);
                 });
 
                 download.setLayoutX(40);
                 download.setLayoutY(resultDistance * index + 55);
                 download.setText("Download");
 
+                delete.setOnAction(click -> {
+                    try {
+                        Files.delete(Paths.get("res/audio/" + podID + "/" + episode.title.replace(":", "") + ".mp3"));
+                        delete.setDisable(true);
+                        download.setDisable(false);
+                        play.setDisable(true);
+                    }
+                    catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+
+                delete.setLayoutX(112);
+                delete.setLayoutY(resultDistance * index + 55);
+                delete.setText("Delete");
+
                 if(!audio.exists()) {
                     play.setDisable(true);
                     download.setDisable(false);
+                    delete.setDisable(true);
                 }
                 else {
                     play.setDisable(false);
                     download.setDisable(true);
+                    delete.setDisable(false);
                 }
 
                 index++;
 
-                displayPane.getChildren().addAll(title, play, download);
+                displayPane.getChildren().addAll(title, play, download, delete);
             }
         }
     }
