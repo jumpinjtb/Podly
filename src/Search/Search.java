@@ -45,7 +45,7 @@ public class Search {
     @FXML
     private ToolBar bottomBar;
     @FXML
-    private ToolBar topBar,bottomBar,toolBar;
+    private ToolBar topBar,toolBar;
 
 
 
@@ -81,7 +81,7 @@ public class Search {
     private void parseJson(String json) throws IOException {
 
         searchPane.getChildren().clear();
-        searchPane.getChildren().addAll(bottomBar, topBar, scrollPane);
+        searchPane.getChildren().addAll(bottomBar, topBar, resultPane);
         searchPane.getChildren().addAll(searchBar, search);
         
 
@@ -175,8 +175,6 @@ public class Search {
             container.getChildren().addAll(view, open, label,subscribe);
             resultPane.setContent(container);
 
-
-            searchPane.getChildren().addAll(view, label, open);
         }
     }
 
@@ -235,8 +233,9 @@ public class Search {
     }
 
     private void openPodcast(String filePath, String id) throws JDOMException, IOException {
-        searchPane.getChildren().addAll(bottomBar);
-        searchPane.getChildren().addAll(searchBar, search);
+        //searchPane.getChildren().addAll(bottomBar);
+        //searchPane.getChildren().addAll(searchBar, search);
+        container.getChildren().clear();
 
 
         RSSFeedParser parser = new RSSFeedParser(filePath);
