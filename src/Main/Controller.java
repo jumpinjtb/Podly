@@ -79,10 +79,18 @@ public class Controller implements Initializable {
             String rss = item.getAttributeValue("xmlUrl");
             URL url = new URL(rss);
             byte[] feed = sendGetRequest(url);
-            File file = new File("res/rss/" + UUID.randomUUID().toString() + ".rss");
+            String id = UUID.randomUUID().toString();
+            String filePath = "res/rss/" + id + ".rss";
+            File file = new File(filePath);
 
             FileOutputStream fos = new FileOutputStream(file.getAbsoluteFile());
             fos.write(feed);
+            RSSFeedParser parser = new RSSFeedParser(filePath);
+            Feed rssFeed = parser.readFeed();
+            URL imageURL = new URL(rssFeed.imageURL);
+            byte[] image = sendGetRequest(imageURL);
+            fos = new FileOutputStream("res/images/" + id + ".jpg");
+            fos.write(image);
         }
     }
 

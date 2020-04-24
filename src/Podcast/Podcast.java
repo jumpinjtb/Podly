@@ -140,7 +140,7 @@ public class Podcast implements Initializable {
                     mediaPlayer.play();
 
                     // Listening Stats
-                    /* Thread t1 = new Thread(() -> {
+                    Thread t1 = new Thread(() -> {
                         File file = new File("res/TimePlayed.txt");
                         file.mkdirs();
                         BufferedReader reader = null;
@@ -158,7 +158,7 @@ public class Podcast implements Initializable {
 
                         }
                     });
-                    t1.start(); */
+                    t1.start();
                 });
 
                 title.setLayoutY(resultDistance * index + 40);
