@@ -17,7 +17,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.media.MediaView;
+import javafx.stage.FileChooser;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,6 +29,10 @@ import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
 
+    @FXML
+    private Button opmlButton;
+    @FXML
+    private Label labelFile;
     @FXML
     public AnchorPane container;
     public ScrollPane resultPane;
@@ -52,6 +56,16 @@ public class Controller implements Initializable {
     public void SearchButtonClicked(ActionEvent actionEvent) throws IOException {
         Pane searchPane = FXMLLoader.load(getClass().getResource("../Search/Search.fxml"));
         mainPane.getChildren().setAll(searchPane);
+    }
+
+    @FXML
+    public void opmlFileChooser(ActionEvent event){
+        FileChooser fc = new FileChooser();
+        File f = fc.showOpenDialog(null);
+
+        if (f != null){
+            labelFile.setText(f.getAbsolutePath());
+        }
     }
 
 

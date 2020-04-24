@@ -1,5 +1,6 @@
 package Main;
 
+
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -48,6 +49,7 @@ public class Main extends Application {
                 System.exit(0);
             }
         });
+
         primaryStage.setTitle("Podly");
         primaryStage.setScene(new Scene(root));
         primaryStage.setResizable(false);
