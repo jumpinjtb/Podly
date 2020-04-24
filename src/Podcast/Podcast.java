@@ -26,6 +26,7 @@ import javax.xml.transform.Result;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.Buffer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
@@ -33,6 +34,7 @@ import java.util.ResourceBundle;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorCompletionService;
+import java.util.stream.Stream;
 
 public class Podcast implements Initializable {
     @FXML
@@ -136,6 +138,27 @@ public class Podcast implements Initializable {
                     mediaPlayer = new MediaPlayer(media);
                     mediaView.setMediaPlayer(mediaPlayer);
                     mediaPlayer.play();
+
+                    // Listening Stats
+                    /* Thread t1 = new Thread(() -> {
+                        File file = new File("res/TimePlayed.txt");
+                        file.mkdirs();
+                        BufferedReader reader = null;
+                        Object[] arr = null;
+                        try {
+                            reader = new BufferedReader(new FileReader(file));
+                            Stream<String> stream = reader.lines();
+                            arr = stream.toArray();
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                        boolean playing = mediaPlayer.getStatus().equals(MediaPlayer.Status.PLAYING);
+                        while(playing) {
+                            playing = mediaPlayer.getStatus().equals(MediaPlayer.Status.PLAYING);
+
+                        }
+                    });
+                    t1.start(); */
                 });
 
                 title.setLayoutY(resultDistance * index + 40);

@@ -18,13 +18,17 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.JDOMException;
+import org.jdom2.input.SAXBuilder;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
-
+import java.util.UUID;
 
 
 public class Controller implements Initializable {
@@ -59,12 +63,26 @@ public class Controller implements Initializable {
     }
 
     @FXML
-    public void opmlFileChooser(ActionEvent event){
+    public void opmlFileChooser(ActionEvent event) throws JDOMException, IOException {
         FileChooser fc = new FileChooser();
         File f = fc.showOpenDialog(null);
 
         if (f != null){
             labelFile.setText(f.getAbsolutePath());
+        }
+
+        SAXBuilder builder = new SAXBuilder();
+        Document doc = builder.build(f);
+        Element root = doc.getRootElement();
+        List<Element> items = root.getChild("body").getChild("outline").getChildren();
+        for(Element item: items) {
+            String rss = item.getAttributeValue("xmlUrl");
+            URL url = new URL(rss);
+            byte[] feed = sendGetRequest(url);
+            File file = new File("res/rss/" + UUID.randomUUID().toString() + ".rss");
+
+            FileOutputStream fos = new FileOutputStream(file.getAbsoluteFile());
+            fos.write(feed);
         }
     }
 
@@ -127,6 +145,18 @@ public class Controller implements Initializable {
                 }
             }
         }
+    }
+
+    private byte[] sendGetRequest(URL url) throws IOException {
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("GET");
+        con.connect();
+
+        int status = con.getResponseCode();
+        InputStream is = con.getInputStream();
+        byte[] value = is.readAllBytes();
+        con.disconnect();
+        return value;
     }
 }
 
