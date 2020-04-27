@@ -26,6 +26,9 @@ import org.jdom2.input.SAXBuilder;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.UUID;
@@ -34,7 +37,11 @@ import java.util.UUID;
 public class Controller implements Initializable {
 
     @FXML
-    private Button opmlButton;
+    public AnchorPane settingsContainer;
+    @FXML
+    public ScrollPane settingsPane;
+    @FXML
+    private Button opmlBtn;
     @FXML
     private Label labelFile;
     @FXML
@@ -146,6 +153,28 @@ public class Controller implements Initializable {
 
                         container.getChildren().addAll(view, name, open);
                         resultPane.setContent(container);
+
+                        ImageView view1 = new ImageView();
+                        view1.setImage(new Image(new FileInputStream(image.getAbsoluteFile())));
+                        view1.setFitWidth(imageWidth);
+                        view1.setFitHeight(imageHeight);
+                        view1.setLayoutY(resultDistance * i + 45);
+
+                        Label label1 = new Label();
+                        label1.setLayoutX(imageWidth + 20);
+                        label1.setLayoutY(resultDistance * i + 45);
+                        label1.setText("Time Listened");
+
+                        Label timePlayed = new Label();
+                        timePlayed.setText(timeListened(id));
+                        timePlayed.setLayoutX(imageWidth + 20);
+                        timePlayed.setLayoutY(resultDistance * i + 60);
+
+                        opmlBtn.setLayoutX(800);
+                        settingsContainer.getChildren().addAll(label1, view1, timePlayed);
+                        settingsPane.setContent(settingsContainer);
+
+
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -165,6 +194,22 @@ public class Controller implements Initializable {
         byte[] value = is.readAllBytes();
         con.disconnect();
         return value;
+    }
+
+    private String timeListened(String id) throws IOException {
+        String val = "";
+        List<String> lines = new ArrayList<>(Files.readAllLines(Paths.get("res/TimePlayed.txt")));
+        String[] values;
+        for(String line: lines) {
+            values = line.split(":");
+            if(values[0].equals(id)) {
+                int time = Integer.parseInt(values[1].replace(" ", ""));
+                int hours = time / 60;
+                int minutes = time % 60;
+                val = hours + " Hours " + minutes + " Minutes";
+            }
+        }
+        return val;
     }
 }
 

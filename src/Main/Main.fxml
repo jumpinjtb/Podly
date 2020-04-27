@@ -38,15 +38,18 @@
           </Tab>
             <Tab text="Settings">
                 <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                     <children>
-                        <Button fx:id="opmlBtn" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#opmlFileChooser" prefHeight="25.0" prefWidth="124.0" text="Import OPML File" />
-                        <Label fx:id="labelFile" layoutX="147.0" layoutY="14.0" prefHeight="25.0" prefWidth="545.0" textFill="#0cf5f1">
-                           <font>
-                              <Font size="16.0" />
-                           </font>
-                        </Label>
-                     </children></AnchorPane>
+                    <ScrollPane fx:id="settingsPane" hbarPolicy="NEVER" layoutY="40.0" prefHeight="647.0" prefWidth="1280.0" stylesheets="@../CSS/resultPane.css" vbarPolicy="ALWAYS">
+                        <AnchorPane fx:id="settingsContainer" prefHeight="655.0" prefWidth="1266.0" stylesheets="@../CSS/container.css">
+                             <children>
+                                <Button fx:id="opmlBtn" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#opmlFileChooser" prefHeight="25.0" prefWidth="124.0" text="Import Podcasts" />
+                                <Label fx:id="labelFile" layoutX="147.0" layoutY="14.0" prefHeight="25.0" prefWidth="545.0">
+                                   <font>
+                                      <Font size="16.0" />
+                                   </font>
+                                </Label>
+                             </children>
+                        </AnchorPane>
+                    </ScrollPane>
                 </content>
             </Tab>
         </tabs>
