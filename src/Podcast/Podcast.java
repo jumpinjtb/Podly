@@ -29,11 +29,13 @@ import java.net.URL;
 import java.nio.Buffer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 public class Podcast implements Initializable {
@@ -57,6 +59,7 @@ public class Podcast implements Initializable {
     private Slider seekBar;
 
     private static String podID = null;
+    private static int timePlayed;
     private int resultDistance = 220;
 
 
@@ -141,21 +144,50 @@ public class Podcast implements Initializable {
 
                     // Listening Stats
                     Thread t1 = new Thread(() -> {
-                        File file = new File("res/TimePlayed.txt");
-                        file.mkdirs();
-                        BufferedReader reader = null;
-                        Object[] arr = null;
+                        String filePath = "res/TimePlayed.txt";
+                        File file = new File(filePath);
                         try {
-                            reader = new BufferedReader(new FileReader(file));
-                            Stream<String> stream = reader.lines();
-                            arr = stream.toArray();
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
-                        }
-                        boolean playing = mediaPlayer.getStatus().equals(MediaPlayer.Status.PLAYING);
-                        while(playing) {
-                            playing = mediaPlayer.getStatus().equals(MediaPlayer.Status.PLAYING);
+                            if(!file.exists()) {
+                                Files.createFile(Paths.get(filePath));
+                            }
 
+                            BufferedReader reader = Files.newBufferedReader(Paths.get(filePath));
+
+                            File rssFolder = new File("res/rss/");
+                            File[] files = rssFolder.listFiles();
+
+                            List<String> lines = new ArrayList<>(Files.readAllLines(Paths.get(filePath)));
+
+                            int lineIndex = -1;
+                            for(int j = 0; j < lines.size(); j++) {
+                                System.out.println(j);
+                                String[] values = lines.get(j).split(":");
+                                if (values[0].equals(podID)) {
+                                    lineIndex = j;
+                                    timePlayed = Integer.parseInt(values[1].substring(1));
+                                    break;
+                                }
+                            }
+                            reader.close();
+
+                            TimeUnit.SECONDS.sleep(1);
+                            boolean playing = mediaPlayer.getStatus().equals(MediaPlayer.Status.PLAYING);
+                            while(playing) {
+                                System.out.println("test");
+                                TimeUnit.SECONDS.sleep(5);
+                                playing = mediaPlayer.getStatus().equals(MediaPlayer.Status.PLAYING);
+                                timePlayed += 5;
+                            }
+                            for(int j = 0; j < lines.size(); j++) {
+                                if(lines.get(j).equals(lines.get(lineIndex))) {
+                                    lines.set(j, podID + ": " + timePlayed);
+                                }
+                            }
+
+                            Files.write(Paths.get(filePath), lines);
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
                     });
                     t1.start();
@@ -244,6 +276,7 @@ public class Podcast implements Initializable {
 
     public static void setPodcast(String id) {
         podID = id;
+        timePlayed = 0;
     }
 
     private void downloadAudio(URL url, File file) throws IOException {

@@ -21,6 +21,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -323,6 +324,14 @@ public class Search {
         OutputStream newRss = new FileOutputStream("res/rss/" + id + ".rss");
         Files.copy(Paths.get("res/temp/" + id + ".rss"), newRss);
         File rssFile = new File(rssFilePath);
+
+        File timePlayed = new File("res/TimePlayed.txt");
+        if(!timePlayed.exists()) {
+            timePlayed.getParentFile().mkdirs();
+            timePlayed.createNewFile();
+        }
+
+        Files.write(Paths.get("res/TimePlayed.txt"), (id + ": 0 \n").getBytes(), StandardOpenOption.APPEND);
     }
 
     public boolean isValudURL(String url) {
