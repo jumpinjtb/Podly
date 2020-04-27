@@ -38,8 +38,8 @@
           </Tab>
             <Tab text="Settings">
                 <content>
-                    <ScrollPane fx:id="settingsPane" hbarPolicy="NEVER" layoutY="40.0" prefHeight="647.0" prefWidth="1280.0" stylesheets="@../CSS/resultPane.css" vbarPolicy="ALWAYS">
-                        <AnchorPane fx:id="settingsContainer" prefHeight="655.0" prefWidth="1266.0" stylesheets="@../CSS/container.css">
+                    <ScrollPane fx:id="settingsPane" hbarPolicy="NEVER" layoutY="40.0" prefHeight="647.0" prefWidth="1280.0"  vbarPolicy="ALWAYS" stylesheets="@../CSS/settingsPane.css">
+                        <AnchorPane fx:id="settingsContainer" prefHeight="655.0" prefWidth="1266.0" stylesheets="@../CSS/settingsContainer.css">
                              <children>
                                 <Button fx:id="opmlBtn" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#opmlFileChooser" prefHeight="25.0" prefWidth="124.0" text="Import Podcasts" />
                                 <Label fx:id="labelFile" layoutX="147.0" layoutY="14.0" prefHeight="25.0" prefWidth="545.0">

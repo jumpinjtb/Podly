@@ -1,0 +1,13 @@
+#settingsContainer
+{
+    -fx-background-color: #2C3539;
+}
+.scroll-bar
+{
+    -fx-background-color: #00FFFF;
+
+}
+.label
+{
+    -fx-text-fill: #00FFFF;
+}
