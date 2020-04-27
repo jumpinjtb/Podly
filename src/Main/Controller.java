@@ -59,7 +59,6 @@ public class Controller implements Initializable {
 
     public void PlayerButtonClicked(ActionEvent actionEvent) throws IOException {
         // calling the main pane to reload with the podcast fxml.
-        // https://www.youtube.com/watch?v=RJOza3XQk34
         SplitPane podPane = FXMLLoader.load(getClass().getResource("../Podcast/Podcast.fxml"));
         mainPane.getChildren().setAll(podPane);
     }
@@ -147,11 +146,36 @@ public class Controller implements Initializable {
                             }
                             mainPane.getChildren().setAll(pane);
                         });
+
                         open.setLayoutX(imageWidth + 20);
                         open.setLayoutY(resultDistance * i + 60);
                         open.setText("Open");
 
-                        container.getChildren().addAll(view, name, open);
+                        Button unsub = new Button();
+                        unsub.setOnAction(click -> {
+                            container.getChildren().removeAll(view, name, open, unsub);
+                            System.out.println("Hello");
+                            try {
+                                Files.delete(Paths.get("res/rss/" + finalId + ".rss"));
+                                Files.delete(Paths.get("res/images/" + finalId + ".jpg"));
+                                if(new File("res/audio/" + finalId).exists()) {
+                                    File file = new File("res/audio/" + finalId);
+                                    File[] fileList = file.listFiles();
+                                    for (File f : fileList) {
+                                        Files.delete(Paths.get(f.getPath()));
+                                    }
+                                    Files.delete(Paths.get("res/audio/" + finalId));
+                                }
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        });
+
+                        unsub.setLayoutX(imageWidth + 70);
+                        unsub.setLayoutY(resultDistance * i + 60);
+                        unsub.setText("Unsubscribe");
+
+                        container.getChildren().addAll(view, name, open, unsub);
                         resultPane.setContent(container);
 
                         ImageView view1 = new ImageView();

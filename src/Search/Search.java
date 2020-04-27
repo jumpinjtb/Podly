@@ -101,6 +101,7 @@ public class Search {
     private void parseJson(String json) throws IOException {
 
         searchPane.getChildren().clear();
+        container.getChildren().clear();
         searchPane.getChildren().addAll(bottomBar, topBar, resultPane);
         searchPane.getChildren().addAll(searchBar, search);
         
