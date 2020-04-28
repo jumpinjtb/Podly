@@ -7,14 +7,16 @@ public class Feed {
     public String id;
     public String link;
     public String description;
+    public String imageURL;
 
     public List<FeedItem> episodes;
 
-    public Feed(String title, String id, String link, String description, List<FeedItem> episodes) {
+    public Feed(String title, String id, String link, String description, String imageURL, List<FeedItem> episodes) {
         this.title = title;
         this.id = id;
         this.link = link;
         this.description = description;
+        this.imageURL = imageURL;
         this.episodes = episodes;
     }
 

@@ -8,6 +8,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.Executor;
 
 import org.jdom2.*;
 import org.jdom2.input.SAXBuilder;
@@ -28,6 +29,15 @@ public class RSSFeedParser {
         String title = root.getChild("channel").getChildText("title");
         String description = root.getChild("channel").getChildText("itunes:subtitle");
         String link = root.getChild("channel").getChildText("link");
+        String image;
+        try {
+            image = root.getChild("channel").getChild("image", Namespace.getNamespace("itunes", "http://www.itunes.com/dtds/podcast-1.0.dtd")).getAttributeValue("href");
+        }
+        catch (Exception e) {
+            image = root.getChild("channel").getChild("image").getAttributeValue("link");
+
+        }
+        //System.out.println(image);
 
         List<FeedItem> episodes = readEpisodes();
 
@@ -37,7 +47,7 @@ public class RSSFeedParser {
             id = feed.getName().substring(0, periodIndex);
         }
 
-        return new Feed(title, id, link, description, episodes);
+        return new Feed(title, id, link, description, image, episodes);
     }
 
     private List<FeedItem> readEpisodes() throws MalformedURLException {
