@@ -77,7 +77,7 @@ public class Podcast implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         //Receives the cover art from the images folder and sets it to the ImageView.
-        Image coverArt = new Image(new File("res/images/SampleImage.jpg").toURI().toString());
+        Image coverArt = new Image(new File("res/images/" + podID + ".jpg").toURI().toString());
         imageView.setImage(coverArt);
 
         //Receives the audio from the audio folder and plays it upon request.
@@ -160,7 +160,6 @@ public class Podcast implements Initializable {
 
                             int lineIndex = -1;
                             for(int j = 0; j < lines.size(); j++) {
-                                System.out.println(j);
                                 String[] values = lines.get(j).split(":");
                                 if (values[0].equals(podID)) {
                                     lineIndex = j;
@@ -173,7 +172,6 @@ public class Podcast implements Initializable {
                             TimeUnit.SECONDS.sleep(1);
                             boolean playing = mediaPlayer.getStatus().equals(MediaPlayer.Status.PLAYING);
                             while(playing) {
-                                System.out.println("test");
                                 TimeUnit.SECONDS.sleep(5);
                                 playing = mediaPlayer.getStatus().equals(MediaPlayer.Status.PLAYING);
                                 timePlayed += 5;

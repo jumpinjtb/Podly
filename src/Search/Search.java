@@ -44,7 +44,7 @@ public class Search {
     public ScrollBar scrollBar;
 
     @FXML
-    private ToolBar topBar,toolBar;
+    private ToolBar topBar,bottomBar;
 
 
 
@@ -249,8 +249,6 @@ public class Search {
     }
 
     private void openPodcast(String filePath, String id) throws JDOMException, IOException {
-        //searchPane.getChildren().addAll(bottomBar);
-        //searchPane.getChildren().addAll(searchBar, search);
         container.getChildren().clear();
 
 
