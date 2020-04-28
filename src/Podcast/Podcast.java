@@ -11,10 +11,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
-import javafx.scene.control.SplitPane;
+import javafx.scene.control.*;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -48,6 +46,8 @@ public class Podcast implements Initializable {
     @FXML
     private SplitPane podcastPane;
     @FXML
+    private ScrollPane resultPane;
+    @FXML
     private MediaView mediaView = new MediaView();
     private MediaPlayer mediaPlayer;
     private Media media;
@@ -55,6 +55,8 @@ public class Podcast implements Initializable {
     private ImageView imageView;
     @FXML
     private Slider volumeSlider;
+    @FXML
+    private AnchorPane container;
     @FXML
     private Slider seekBar;
 
@@ -248,7 +250,8 @@ public class Podcast implements Initializable {
 
                 index++;
 
-                displayPane.getChildren().addAll(title, play, download, delete);
+                container.getChildren().addAll(title, play, download, delete);
+                resultPane.setContent(container);
             }
         }
     }
