@@ -43,9 +43,6 @@ public class Search {
     @FXML
     public ScrollBar scrollBar;
 
-
-    @FXML
-    private ToolBar bottomBar;
     @FXML
     private ToolBar topBar,toolBar;
 
@@ -190,8 +187,6 @@ public class Search {
             subscribe.setLayoutX(imageWidth + 20);
             subscribe.setLayoutY((resultDistance * i) + 90);
             subscribe.setText("Subscribe");
-
-
 
             container.getChildren().addAll(view, open, label,subscribe);
             resultPane.setContent(container);
