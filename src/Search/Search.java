@@ -21,6 +21,8 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -42,7 +44,7 @@ public class Search {
     public ScrollBar scrollBar;
 
     @FXML
-    private ToolBar topBar,bottomBar,toolBar;
+    private ToolBar topBar,toolBar;
 
 
 
@@ -62,24 +64,44 @@ public class Search {
     }
 
 
-    public void search() throws IOException {
+    public void search() throws IOException, JDOMException {
         String value = searchBar.getText();
 
-        URL url = new URL("https://itunes.apple.com/search?term=" +
-                URLEncoder.encode(value, StandardCharsets.UTF_8) + "&" + "entity=podcast");
+        if(isValudURL(value)) {
+            byte[] result = sendGetRequest(new URL(value));
+            String id = UUID.randomUUID().toString();
+            String filePath = "res/rss/" + id + ".rss";
+            FileOutputStream out = new FileOutputStream(filePath);
+            out.write(result);
+            openPodcast(filePath, id);
 
-        byte[] content = sendGetRequest(url);
+            RSSFeedParser parser = new RSSFeedParser(filePath);
+            Feed feed = parser.readFeed();
+            String imageURL = feed.imageURL;
 
-        String str = new String(content);
-        parseJson(str);
+            byte[] image = sendGetRequest(new URL(imageURL));
+            out = new FileOutputStream("res/images/" + id + ".jpg");
+            out.write(image);
+        }
+        else {
+            URL url = new URL("https://itunes.apple.com/search?term=" +
+                    URLEncoder.encode(value, StandardCharsets.UTF_8) + "&" + "entity=podcast");
+
+            byte[] content = sendGetRequest(url);
+
+            String str = new String(content);
+            parseJson(str);
+        }
 
     }
 
     private void parseJson(String json) throws IOException {
 
-        //searchPane.getChildren().addAll(bottomBar, topBar);
-        // searchPane.getChildren().addAll(searchBar, search);
-
+        searchPane.getChildren().clear();
+        container.getChildren().clear();
+        searchPane.getChildren().addAll(bottomBar, topBar, resultPane);
+        searchPane.getChildren().addAll(searchBar, search);
+        
 
         //Create regex patterns
         //Gets number of results from iTunes
@@ -227,8 +249,9 @@ public class Search {
     }
 
     private void openPodcast(String filePath, String id) throws JDOMException, IOException {
-        searchPane.getChildren().addAll(bottomBar);
-        searchPane.getChildren().addAll(searchBar, search);
+        //searchPane.getChildren().addAll(bottomBar);
+        //searchPane.getChildren().addAll(searchBar, search);
+        container.getChildren().clear();
 
 
         RSSFeedParser parser = new RSSFeedParser(filePath);
@@ -297,6 +320,24 @@ public class Search {
         OutputStream newRss = new FileOutputStream("res/rss/" + id + ".rss");
         Files.copy(Paths.get("res/temp/" + id + ".rss"), newRss);
         File rssFile = new File(rssFilePath);
+
+        File timePlayed = new File("res/TimePlayed.txt");
+        if(!timePlayed.exists()) {
+            timePlayed.getParentFile().mkdirs();
+            timePlayed.createNewFile();
+        }
+
+        Files.write(Paths.get("res/TimePlayed.txt"), (id + ": 0 \n").getBytes(), StandardOpenOption.APPEND);
+    }
+
+    public boolean isValudURL(String url) {
+        try {
+            new URL(url);
+            return true;
+        }
+        catch(Exception e) {
+            return false;
+        }
     }
 
 }

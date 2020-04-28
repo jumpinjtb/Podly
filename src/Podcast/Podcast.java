@@ -11,8 +11,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
-import javafx.scene.control.*;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
+import javafx.scene.control.SplitPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -20,19 +22,27 @@ import javafx.scene.media.MediaView;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.Image;
 
+import javax.xml.transform.Result;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.Buffer;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.CompletionService;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
 public class Podcast implements Initializable {
     @FXML
     public Pane displayPane;
     @FXML
     public Pane playerPane;
-    public AnchorPane container;
-    public ScrollPane resultPane;
     @FXML
     private Button mainButton, SearchButton, PlayerButton;
     @FXML
@@ -49,6 +59,7 @@ public class Podcast implements Initializable {
     private Slider seekBar;
 
     private static String podID = null;
+    private static int timePlayed;
     private int resultDistance = 220;
 
 
@@ -65,19 +76,10 @@ public class Podcast implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        String fileName = "";
-        try {
-            fileName = "res/rss/" + podID + ".rss";
-            String imageName = "res/images/" + podID + ".jpg";
-            RSSFeedParser parser = new RSSFeedParser(fileName);
-            Feed feed = parser.readFeed();
-            File image = new File(imageName);
-            imageView.setImage(new Image(new FileInputStream(image.getAbsoluteFile())));
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
+        //Receives the cover art from the images folder and sets it to the ImageView.
+        Image coverArt = new Image(new File("res/images/SampleImage.jpg").toURI().toString());
+        imageView.setImage(coverArt);
+
         //Receives the audio from the audio folder and plays it upon request.
         String path = new File("res/audio/SampleMedia.mp3").getAbsolutePath();
         media = new Media(new File(path).toURI().toString());
@@ -125,27 +127,76 @@ public class Podcast implements Initializable {
 
             assert feed != null;
             List<FeedItem> episodes = feed.getEpisodes();
-           int index = 0;
+            int index = 0;
             for(FeedItem episode: episodes) {
                 File audio = new File("res/audio/" + podID +  "/" +
                         episode.title.replace(":", "") + ".mp3").getAbsoluteFile();
                 Label title = new Label(episode.title);
                 Button play = new Button();
-                //Receives the cover art from the images folder and sets it to the ImageView.
-
+                Button download = new Button();
+                Button delete = new Button();
 
                 play.setOnAction(click1 -> {
                     media = new Media(audio.toURI().toString());
                     mediaPlayer = new MediaPlayer(media);
                     mediaView.setMediaPlayer(mediaPlayer);
                     mediaPlayer.play();
+
+                    // Listening Stats
+                    Thread t1 = new Thread(() -> {
+                        String filePath = "res/TimePlayed.txt";
+                        File file = new File(filePath);
+                        try {
+                            if(!file.exists()) {
+                                Files.createFile(Paths.get(filePath));
+                            }
+
+                            BufferedReader reader = Files.newBufferedReader(Paths.get(filePath));
+
+                            File rssFolder = new File("res/rss/");
+                            File[] files = rssFolder.listFiles();
+
+                            List<String> lines = new ArrayList<>(Files.readAllLines(Paths.get(filePath)));
+
+                            int lineIndex = -1;
+                            for(int j = 0; j < lines.size(); j++) {
+                                System.out.println(j);
+                                String[] values = lines.get(j).split(":");
+                                if (values[0].equals(podID)) {
+                                    lineIndex = j;
+                                    timePlayed = Integer.parseInt(values[1].substring(1));
+                                    break;
+                                }
+                            }
+                            reader.close();
+
+                            TimeUnit.SECONDS.sleep(1);
+                            boolean playing = mediaPlayer.getStatus().equals(MediaPlayer.Status.PLAYING);
+                            while(playing) {
+                                System.out.println("test");
+                                TimeUnit.SECONDS.sleep(5);
+                                playing = mediaPlayer.getStatus().equals(MediaPlayer.Status.PLAYING);
+                                timePlayed += 5;
+                            }
+                            for(int j = 0; j < lines.size(); j++) {
+                                if(lines.get(j).equals(lines.get(lineIndex))) {
+                                    lines.set(j, podID + ": " + timePlayed);
+                                }
+                            }
+
+                            Files.write(Paths.get(filePath), lines);
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    });
+                    t1.start();
                 });
 
                 title.setLayoutY(resultDistance * index + 40);
                 play.setLayoutY(resultDistance * index + 55);
                 play.setText("Play");
 
-                Button download = new Button();
                 download.setOnAction(click -> {
                     Thread t1 = new Thread(() -> {
                         String audioFilePath = "res/audio/" + podID + "/" + episode.title.replace(":", "") + ".mp3";
@@ -161,27 +212,45 @@ public class Podcast implements Initializable {
                         }
                     });
                     t1.start();
-
+                    download.setDisable(true);
+                    play.setDisable(false);
+                    delete.setDisable(false);
                 });
 
                 download.setLayoutX(40);
                 download.setLayoutY(resultDistance * index + 55);
                 download.setText("Download");
 
+                delete.setOnAction(click -> {
+                    try {
+                        Files.delete(Paths.get("res/audio/" + podID + "/" + episode.title.replace(":", "") + ".mp3"));
+                        delete.setDisable(true);
+                        download.setDisable(false);
+                        play.setDisable(true);
+                    }
+                    catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+
+                delete.setLayoutX(112);
+                delete.setLayoutY(resultDistance * index + 55);
+                delete.setText("Delete");
+
                 if(!audio.exists()) {
                     play.setDisable(true);
                     download.setDisable(false);
+                    delete.setDisable(true);
                 }
                 else {
                     play.setDisable(false);
                     download.setDisable(true);
+                    delete.setDisable(false);
                 }
-
 
                 index++;
 
-                container.getChildren().addAll(title, play, download);
-                resultPane.setContent(container);
+                displayPane.getChildren().addAll(title, play, download, delete);
             }
         }
     }
@@ -207,6 +276,7 @@ public class Podcast implements Initializable {
 
     public static void setPodcast(String id) {
         podID = id;
+        timePlayed = 0;
     }
 
     private void downloadAudio(URL url, File file) throws IOException {
