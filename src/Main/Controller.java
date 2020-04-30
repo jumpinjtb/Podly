@@ -59,12 +59,12 @@ public class Controller implements Initializable {
 
     public void PlayerButtonClicked(ActionEvent actionEvent) throws IOException {
         // calling the main pane to reload with the podcast fxml.
-        SplitPane podPane = FXMLLoader.load(getClass().getResource("../Podcast/Podcast.fxml"));
+        SplitPane podPane = FXMLLoader.load(getClass().getResource("/Podcast/Podcast.fxml"));
         mainPane.getChildren().setAll(podPane);
     }
 
     public void SearchButtonClicked(ActionEvent actionEvent) throws IOException {
-        Pane searchPane = FXMLLoader.load(getClass().getResource("../Search/Search.fxml"));
+        Pane searchPane = FXMLLoader.load(getClass().getResource("/Search/Search.fxml"));
         mainPane.getChildren().setAll(searchPane);
     }
 
@@ -140,7 +140,7 @@ public class Controller implements Initializable {
                             Podcast.setPodcast(finalId);
                             Parent pane = null;
                             try {
-                                pane = FXMLLoader.load(getClass().getResource("../Podcast/Podcast.fxml"));
+                                pane = FXMLLoader.load(getClass().getResource("/Podcast/Podcast.fxml"));
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }

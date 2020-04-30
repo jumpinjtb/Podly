@@ -54,12 +54,12 @@ public class Search {
     private int episodeResult = 60;
 
     public void MainButtonClicked(ActionEvent actionEvent) throws IOException {
-        Parent mainPane = FXMLLoader.load(getClass().getResource("../Main/Main.fxml"));
+        Parent mainPane = FXMLLoader.load(getClass().getResource("/Main/Main.fxml"));
         searchPane.getChildren().setAll(mainPane);
     }
 
     public void PlayerButtonClicked(ActionEvent actionEvent) throws IOException {
-        Parent podPane = FXMLLoader.load(getClass().getResource("../Podcast/Podcast.fxml"));
+        Parent podPane = FXMLLoader.load(getClass().getResource("/Podcast/Podcast.fxml"));
         searchPane.getChildren().setAll(podPane);
     }
 
