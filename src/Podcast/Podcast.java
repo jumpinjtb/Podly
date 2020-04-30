@@ -49,8 +49,7 @@ public class Podcast implements Initializable {
     private ScrollPane resultPane;
     @FXML
     private MediaView mediaView = new MediaView();
-    private MediaPlayer mediaPlayer;
-    private Media media;
+    private CustomMediaPlayer player;
     @FXML
     private ImageView imageView;
     @FXML
@@ -83,39 +82,14 @@ public class Podcast implements Initializable {
         imageView.setImage(coverArt);
 
         //Receives the audio from the audio folder and plays it upon request.
-        String path = new File("res/audio/SampleMedia.mp3").getAbsolutePath();
+        /* String path = new File("res/audio/SampleMedia.mp3").getAbsolutePath();
         media = new Media(new File(path).toURI().toString());
         mediaPlayer = new MediaPlayer(media);
         mediaView.setMediaPlayer(mediaPlayer);
-        mediaPlayer.setAutoPlay(false);
+        mediaPlayer.setAutoPlay(false); */
 
         //Updates the current time of the currently playing media.
-        mediaPlayer.currentTimeProperty().addListener(new InvalidationListener() {
-            @Override
-            public void invalidated(Observable observable) {
-                updatedValues();
-            }
-        });
 
-        //Allows the user to seek through the playing media
-        seekBar.valueProperty().addListener(new InvalidationListener() {
-            @Override
-            public void invalidated(Observable observable) {
-                if (seekBar.isPressed()){
-                    mediaPlayer.seek(mediaPlayer.getMedia().getDuration().multiply(seekBar.getValue() / 100));
-                }
-            }
-        });
-
-        volumeSlider.setValue(mediaPlayer.getVolume() * 100);
-        volumeSlider.setShowTickMarks(true);
-        volumeSlider.setShowTickLabels(true);
-        volumeSlider.valueProperty().addListener(new InvalidationListener() {
-            @Override
-            public void invalidated(Observable observable) {
-                mediaPlayer.setVolume(volumeSlider.getValue() / 100);
-            }
-        });
 
         if(podID != null) {
             String filename = "res/rss/" + podID + ".rss";
@@ -139,10 +113,9 @@ public class Podcast implements Initializable {
                 Button delete = new Button();
 
                 play.setOnAction(click1 -> {
-                    media = new Media(audio.toURI().toString());
-                    mediaPlayer = new MediaPlayer(media);
-                    mediaView.setMediaPlayer(mediaPlayer);
-                    mediaPlayer.play();
+                    Media media = new Media(audio.toURI().toString());
+                    player = new CustomMediaPlayer(media, seekBar, volumeSlider);
+                    player.play(click1);
 
                     // Listening Stats
                     Thread t1 = new Thread(() -> {
@@ -172,10 +145,10 @@ public class Podcast implements Initializable {
                             reader.close();
 
                             TimeUnit.SECONDS.sleep(1);
-                            boolean playing = mediaPlayer.getStatus().equals(MediaPlayer.Status.PLAYING);
+                            boolean playing = player.isPlaying();
                             while(playing) {
                                 TimeUnit.SECONDS.sleep(5);
-                                playing = mediaPlayer.getStatus().equals(MediaPlayer.Status.PLAYING);
+                                playing = player.isPlaying();
                                 timePlayed += 5;
                             }
                             for(int j = 0; j < lines.size(); j++) {
@@ -256,24 +229,14 @@ public class Podcast implements Initializable {
         }
     }
 
-    //Updates the value of the seekBar to be in sync with the current time of the media.
-    protected void updatedValues(){
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                seekBar.setValue(mediaPlayer.getCurrentTime().toMillis() / mediaPlayer.getTotalDuration().toMillis() * 100);
-            }
-        });
-    }
-
     public void play(ActionEvent event){
-        mediaPlayer.seek(mediaPlayer.getMedia().getDuration().multiply(seekBar.getValue() / 100));
-        mediaPlayer.play();
+        player.play(event);
     }
 
     public void pause(ActionEvent event){
-        mediaPlayer.pause();
+        player.pause(event);
     }
+
 
     public static void setPodcast(String id) {
         podID = id;
