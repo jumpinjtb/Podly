@@ -144,7 +144,7 @@ public class Controller implements Initializable {
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
-                            container.getChildren().setAll(pane);
+                            mainPane.getChildren().setAll(pane);
                         });
 
                         open.setLayoutX(imageWidth + 20);

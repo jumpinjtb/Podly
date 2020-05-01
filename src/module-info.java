@@ -9,4 +9,9 @@ module Podly {
     requires jdom;
 
     opens Main;
+    opens Podcast;
+    opens Search;
+    exports Podcast;
+    exports Main;
+    exports Search;
 }

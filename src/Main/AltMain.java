@@ -1,3 +1,5 @@
+package Main;
+
 import Main.Main;
 
 public class AltMain {
